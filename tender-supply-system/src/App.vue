@@ -1,16 +1,5 @@
-<script setup>
-
-</script>
-
 <template>
-  <header>
-
-    <div>
-     
-    </div>
-  </header>
-
-  <main>
-    
-  </main>
+  <div>
+    <router-view></router-view>
+  </div>
 </template>
