@@ -38,7 +38,7 @@
           <div class="flex justify-between items-center mb-4">
             <h2 class="text-2xl font-bold">Contract Management</h2>
             <button 
-              @click="showCreateModal = true" 
+              @click="openNewContractModal()" 
               class="bg-blue-600 text-white px-4 py-2 rounded-md flex items-center"
             >
               <span class="mr-1">+</span> Create New Contract
@@ -82,44 +82,37 @@
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-200">
-                <tr>
-                  <td class="py-3 px-4">#CT-2025-001</td>
-                  <td class="py-3 px-4">Office Supplies Agreement</td>
-                  <td class="py-3 px-4">Office Solutions Inc.</td>
-                  <td class="py-3 px-4"><span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">Active</span></td>
-                  <td class="py-3 px-4">Dec 31, 2025</td>
+                <tr v-for="contract in contracts" :key="contract.id">
+                  <td class="py-3 px-4">{{ contract.id }}</td>
+                  <td class="py-3 px-4">{{ contract.title }}</td>
+                  <td class="py-3 px-4">{{ contract.supplier }}</td>
                   <td class="py-3 px-4">
-                    <button class="bg-blue-600 text-white px-4 py-1 rounded-md text-sm">View</button>
+                    <span 
+                      :class="{
+                        'bg-green-100 text-green-800': contract.status === 'Active',
+                        'bg-yellow-100 text-yellow-800': contract.status === 'Renewal'
+                      }" 
+                      class="px-2 py-1 rounded-full text-xs"
+                    >
+                      {{ contract.status }}
+                    </span>
                   </td>
-                </tr>
-                <tr>
-                  <td class="py-3 px-4">#CT-2024-023</td>
-                  <td class="py-3 px-4">IT Support Services</td>
-                  <td class="py-3 px-4">TechGuard Security</td>
-                  <td class="py-3 px-4"><span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs">Renewal</span></td>
-                  <td class="py-3 px-4">Apr 15, 2025</td>
+                  <td class="py-3 px-4">{{ contract.expiryDate }}</td>
                   <td class="py-3 px-4">
-                    <button class="bg-orange-500 text-white px-4 py-1 rounded-md text-sm">Renew</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="py-3 px-4">#CT-2025-008</td>
-                  <td class="py-3 px-4">Legal Consulting Services</td>
-                  <td class="py-3 px-4">Hamilton & Partners LLP</td>
-                  <td class="py-3 px-4"><span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">Active</span></td>
-                  <td class="py-3 px-4">Jul 22, 2025</td>
-                  <td class="py-3 px-4">
-                    <button class="bg-blue-600 text-white px-4 py-1 rounded-md text-sm">View</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="py-3 px-4">#CT-2024-045</td>
-                  <td class="py-3 px-4">Facilities Maintenance</td>
-                  <td class="py-3 px-4">BuildRight Services</td>
-                  <td class="py-3 px-4"><span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs">Renewal</span></td>
-                  <td class="py-3 px-4">May 10, 2025</td>
-                  <td class="py-3 px-4">
-                    <button class="bg-orange-500 text-white px-4 py-1 rounded-md text-sm">Renew</button>
+                    <button 
+                      v-if="contract.status === 'Active'"
+                      @click="openViewContractModal(contract)" 
+                      class="bg-blue-600 text-white px-4 py-1 rounded-md text-sm"
+                    >
+                      View
+                    </button>
+                    <button 
+                      v-else-if="contract.status === 'Renewal'"
+                      @click="openRenewContractModal(contract)" 
+                      class="bg-orange-500 text-white px-4 py-1 rounded-md text-sm"
+                    >
+                      Renew
+                    </button>
                   </td>
                 </tr>
               </tbody>
@@ -148,35 +141,126 @@
         </main>
       </div>
   
-      <!-- Create New Contract Modal -->
-      <CreateContractModal 
-        :isOpen="showCreateModal" 
-        @close="showCreateModal = false"
+      <!-- Contract Modal (Create/View/Renew) -->
+      <ContractModal 
+        :isOpen="showContractModal" 
+        :modalMode="modalMode"
+        :contractData="selectedContract"
+        @close="showContractModal = false"
         @submit="handleContractSubmit"
       />
-
+  
     </div>
   </template>
   
   <script>
-  import { ref } from 'vue';
-  import CreateContractModal from '@/components/Buyer/CreateContractModal.vue';
+  import { ref, reactive } from 'vue';
+  import ContractModal from '@/components/Buyer/ContractModal.vue';
   
   export default {
     name: 'ContractManagement',
     components: {
-      CreateContractModal
+      ContractModal
     },
     setup() {
-      const showCreateModal = ref(false);
+      const showContractModal = ref(false);
+      const modalMode = ref('create'); // 'create', 'view', or 'renew'
+      const selectedContract = ref(null);
+      
+      // Sample contracts data
+      const contracts = reactive([
+        {
+          id: '#CT-2025-001',
+          title: 'Office Supplies Agreement',
+          supplier: 'Office Solutions Inc.',
+          supplierValue: 'officesolutions',
+          status: 'Active',
+          expiryDate: 'Dec 31, 2025',
+          type: 'goods'
+        },
+        {
+          id: '#CT-2024-023',
+          title: 'IT Support Services',
+          supplier: 'TechGuard Security',
+          supplierValue: 'techguard',
+          status: 'Renewal',
+          expiryDate: 'Apr 15, 2025',
+          type: 'service'
+        },
+        {
+          id: '#CT-2025-008',
+          title: 'Legal Consulting Services',
+          supplier: 'Hamilton & Partners LLP',
+          supplierValue: 'hamilton',
+          status: 'Active',
+          expiryDate: 'Jul 22, 2025',
+          type: 'service'
+        },
+        {
+          id: '#CT-2024-045',
+          title: 'Facilities Maintenance',
+          supplier: 'BuildRight Services',
+          supplierValue: 'buildright',
+          status: 'Renewal',
+          expiryDate: 'May 10, 2025',
+          type: 'service'
+        }
+      ]);
+      
+      // Open modal for new contract
+      const openNewContractModal = () => {
+        modalMode.value = 'create';
+        selectedContract.value = null;
+        showContractModal.value = true;
+      };
+      
+      // Open modal for viewing contract details
+      const openViewContractModal = (contract) => {
+        modalMode.value = 'view';
+        selectedContract.value = {
+          title: contract.title,
+          type: contract.type,
+          supplier: contract.supplierValue,
+          id: contract.id,
+          expiryDate: contract.expiryDate
+        };
+        showContractModal.value = true;
+      };
+      
+      // Open modal for renewing contract
+      const openRenewContractModal = (contract) => {
+        modalMode.value = 'renew';
+        selectedContract.value = {
+          title: contract.title,
+          type: contract.type,
+          supplier: contract.supplierValue,
+          id: contract.id,
+          expiryDate: contract.expiryDate
+        };
+        showContractModal.value = true;
+      };
       
       const handleContractSubmit = (formData) => {
-        console.log('New contract submitted:', formData);
-        // Here you would typically send this data to your backend
+        if (modalMode.value === 'create') {
+          console.log('New contract submitted:', formData);
+          // Here you would typically send this data to your backend
+        } else if (modalMode.value === 'view') {
+          console.log('Contract updated:', formData);
+          // Update the existing contract
+        } else if (modalMode.value === 'renew') {
+          console.log('Contract renewed:', formData);
+          // Process contract renewal
+        }
       };
   
       return {
-        showCreateModal,
+        showContractModal,
+        modalMode,
+        selectedContract,
+        contracts,
+        openNewContractModal,
+        openViewContractModal,
+        openRenewContractModal,
         handleContractSubmit
       };
     }

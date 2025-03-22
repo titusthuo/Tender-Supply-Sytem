@@ -6,6 +6,9 @@ import BuyerDashboard from '../components/Buyer/BuyerDashboard.vue'
 import Tenders from '../components/Buyer/Tenders.vue'
 import SupplierManagement from '../components/Buyer/SupplierManagement.vue'
 import ContractManagement from '../components/Buyer/ContractManagement.vue'
+import OrderManagement from '../components/Buyer/OrderManagement.vue'
+import ReportAndCompliance from '../components/Buyer/ReportAndCompliance.vue'
+import ProfileSettings from '../components/Profile/ProfileSettings.vue'
 
 const routes = [
   {
@@ -38,6 +41,21 @@ const routes = [
     name: 'contractManagement',
     component: ContractManagement,
   },
+  {
+    path: '/orderManagement',
+    name: 'orderManagement',
+    component: OrderManagement,
+  },
+  {
+    path: '/reportAndCompliance',
+    name: 'reportAndCompliance',
+    component: ReportAndCompliance
+  },
+  {
+    path: '/profile',
+    name: 'profile',
+    component: ProfileSettings
+  }
   // other routes...
 ]
 
