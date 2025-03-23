@@ -30,7 +30,7 @@ const handleLogin = () => {
 </script>
 
 <template>
-    <div class="min-h-screen bg-gradient-to-br from-blue-300 via-blue-500 to-purple-600">
+    <div class="absolute inset-0 bg-gradient-to-br from-blue-300 via-blue-500 to-purple-600 min-h-screen w-full overflow-auto">
       <div class="container mx-auto px-4 py-12 md:py-20">
         <!-- Main content container -->
         <div class="flex flex-col items-center justify-center">
