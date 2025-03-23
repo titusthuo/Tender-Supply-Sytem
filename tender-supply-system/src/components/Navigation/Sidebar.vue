@@ -34,11 +34,11 @@ const menuItems = [
         key: 'tenders',
         icon: 'file-text'
       },
-      {
-        label: 'Supplier Management',
-        key: 'supplierManagement',
-        icon: 'users'
-      },
+      // {
+      //   label: 'Supplier Management',
+      //   key: 'supplierManagement',
+      //   icon: 'users'
+      // },
       {
         label: 'Contract Management',
         key: 'contractManagement',
@@ -53,6 +53,33 @@ const menuItems = [
         label: 'Reports & Compliance',
         key: 'reportAndCompliance',
         icon: 'chart-bar'
+      }
+    ]
+  },
+  {
+    label: 'Supplier',
+    key: 'Supplier',
+    icon: 'shopping-cart',
+    children: [
+      {
+        label: 'Dashboard',
+        key: 'SupplierDashboard',
+        icon: 'dashboard',
+      },
+      {
+        label: 'Products',
+        key: 'SupplierProducts',
+        icon: 'box'
+      },
+      {
+        label: 'Profile',
+        key: 'SupplierProfile',
+        icon: 'users'
+      },
+      {
+        label: 'Tenders',
+        key: 'SupplierTenders',
+        icon: 'users'
       }
     ]
   },

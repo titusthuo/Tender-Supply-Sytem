@@ -19,35 +19,8 @@
       <!-- Main Content Area -->
       <div class="flex">
         <!-- Sidebar -->
-        <div class="w-24 bg-white border-r border-gray-200 min-h-screen">
-          <nav class="flex flex-col items-center pt-4">
-            <router-link to="/buyers" class="py-3 px-4 text-center text-sm text-gray-600">
-              <div class="mb-1">Dashboard</div>
-            </router-link>
-            <router-link to="/tenders" class="py-3 px-4 text-center text-sm text-gray-600">
-              <div class="mb-1">Tenders</div>
-            </router-link>
-            <router-link to="/supplierManagement" class="py-3 px-4 text-center text-sm text-gray-600">
-              <div class="mb-1">Suppliers</div>
-            </router-link>
-            <router-link to="/contractManagement" class="py-3 px-4 text-center text-sm text-gray-600">
-              <div class="mb-1">Contracts</div>
-            </router-link>
-            <router-link to="/orderManagement" class="py-3 px-4 text-center text-sm text-gray-600">
-              <div class="mb-1">Orders</div>
-            </router-link>
-            <router-link to="/reportAndCompliance" class="py-3 px-4 text-center text-sm text-gray-600 bg-blue-100 font-medium">
-              <div class="mb-1">Reports</div>
-            </router-link>
-            <router-link to="/collaboration" class="py-3 px-4 text-center text-sm text-gray-600">
-              <div class="mb-1">Collaboration</div>
-            </router-link>
-            <router-link to="/settings" class="py-3 px-4 text-center text-sm text-gray-600">
-              <div class="mb-1">Settings</div>
-            </router-link>
-          </nav>
-        </div>
-  
+        
+        
         <!-- Main Content -->
         <div class="flex-1 p-6">
           <div class="flex justify-between items-center mb-4">

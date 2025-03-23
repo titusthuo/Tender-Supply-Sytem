@@ -20,18 +20,7 @@
       <!-- Sidebar and Main Content -->
       <div class="flex">
         <!-- Sidebar -->
-        <aside class="w-24 bg-white shadow-md">
-          <nav class="flex flex-col">
-            <router-link to="/buyers" class="py-3 px-4 text-sm text-gray-500 hover:bg-blue-50">Dashboard</router-link>
-            <router-link to="/tenders" class="py-3 px-4 text-sm text-gray-500 hover:bg-blue-50">Tenders</router-link>
-            <router-link to="/supplierManagement" class="py-3 px-4 text-sm text-gray-500 hover:bg-blue-50">Suppliers</router-link>
-            <router-link to="/contractManagement" class="py-3 px-4 text-sm text-gray-500 hover:bg-blue-50 bg-blue-100">Contracts</router-link>
-            <a href="#" class="py-3 px-4 text-sm text-gray-500 hover:bg-blue-50">Orders</a>
-            <a href="#" class="py-3 px-4 text-sm text-gray-500 hover:bg-blue-50">Reports</a>
-            <a href="#" class="py-3 px-4 text-sm text-gray-500 hover:bg-blue-50">Collaboration</a>
-            <a href="#" class="py-3 px-4 text-sm text-gray-500 hover:bg-blue-50">Settings</a>
-          </nav>
-        </aside>
+     
   
         <!-- Main Content -->
         <main class="flex-1 p-6">

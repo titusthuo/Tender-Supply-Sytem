@@ -16,6 +16,11 @@ import CarrierSelection from '../components/Carrier/CarrierSelection.vue'
 import ShipmentTracking from '../components/Carrier/ShipmentTracking.vue'
 import InternationalShipping from '../components/Carrier/InternationalShipping.vue'
 import CarrierRegistration from '../components/Carrier/CarrierRegistration.vue'
+import SupplierDashboard from '../components/Supplier/SupplierDashboard.vue'
+import SupplierProducts from '../components/Supplier/SupplierProducts.vue'
+import SupplierProfile from '../components/Supplier/SupplierProfile.vue'
+import SupplierTenders from '../components/Supplier/SupplierTenders.vue'
+
 
 // Import layouts and components
 import DashboardLayout from '../components/Layout/DashboardLayout.vue'
@@ -123,6 +128,107 @@ const routes = [
       ]
     }
   },
+  {
+    path: '/SupplierDashboard',
+    name: 'SupplierDashboard',
+    component: SupplierDashboard,
+    meta: {
+      layout: DashboardLayout,
+      topLeftSlot: Breadcrumb,
+      breadcrumbs: [
+        {
+          text: 'Home',
+          active: false,
+          to: { name: 'home' }
+        },
+        {
+          text: 'Buyer',
+          active: false,
+          to: { name: 'Supplier' }
+        },
+        {
+          text: 'Supplier Dashboard',
+          active: true
+        }
+      ]
+    }
+  },
+  {
+    path: '/SupplierProducts',
+    name: 'SupplierProducts',
+    component: SupplierProducts,
+    meta: {
+      layout: DashboardLayout,
+      topLeftSlot: Breadcrumb,
+      breadcrumbs: [
+        {
+          text: 'Home',
+          active: false,
+          to: { name: 'home' }
+        },
+        {
+          text: 'Buyer',
+          active: false,
+          to: { name: 'Supplier' }
+        },
+        {
+          text: 'Supplier Products',
+          active: true
+        }
+      ]
+    }
+  },
+  {
+    path: '/SupplierProfile',
+    name: 'SupplierProfile',
+    component: SupplierProfile,
+    meta: {
+      layout: DashboardLayout,
+      topLeftSlot: Breadcrumb,
+      breadcrumbs: [
+        {
+          text: 'Home',
+          active: false,
+          to: { name: 'home' }
+        },
+        {
+          text: 'Buyer',
+          active: false,
+          to: { name: 'Supplier' }
+        },
+        {
+          text: 'Supplier Profile',
+          active: true
+        }
+      ]
+    }
+  },
+  {
+    path: '/SupplierTenders',
+    name: 'SupplierTenders',
+    component: SupplierTenders,
+    meta: {
+      layout: DashboardLayout,
+      topLeftSlot: Breadcrumb,
+      breadcrumbs: [
+        {
+          text: 'Home',
+          active: false,
+          to: { name: 'home' }
+        },
+        {
+          text: 'Buyer',
+          active: false,
+          to: { name: 'Supplier' }
+        },
+        {
+          text: 'Supplier Tenders',
+          active: true
+        }
+      ]
+    }
+  },
+  
   {
     path: '/contractManagement',
     name: 'contractManagement',

@@ -2,7 +2,7 @@
   <div class="flex flex-col h-screen">
     <!-- Header -->
     <div class="bg-blue-500 text-white py-4 px-6 flex justify-between items-center">
-      <h1 class="text-xl font-bold">Buyer Portal</h1>
+      <h1 class="text-xl font-bold"></h1>
       <div class="flex items-center space-x-2">
         <button class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
           <span class="text-white">?</span>
@@ -18,51 +18,7 @@
 
     <!-- Main Content -->
     <div class="flex flex-1 relative">
-      <!-- Sidebar Navigation -->
-      <div class="w-24 bg-white border-r border-gray-200">
-        <nav class="flex flex-col py-4">
-          <router-link to="/buyers" class="py-3 px-4 text-gray-500 hover:bg-blue-50 text-center text-sm">
-            <div class="flex flex-col items-center">
-              <span>Dashboard</span>
-            </div>
-          </router-link>
-          <router-link to="/tenders" class="py-3 px-4 text-gray-500 hover:bg-blue-50 text-center text-sm">
-            <div class="flex flex-col items-center">
-              <span>Tenders</span>
-            </div>
-          </router-link>
-          <router-link to="/supplierManagement" class="py-3 px-4 text-gray-500 hover:bg-blue-50 text-center text-sm">
-            <div class="flex flex-col items-center">
-              <span>Suppliers</span>
-            </div>
-          </router-link>
-          <router-link to="/contractManagement" class="py-3 px-4 text-gray-500 hover:bg-blue-50 text-center text-sm">
-            <div class="flex flex-col items-center">
-              <span>Contracts</span>
-            </div>
-          </router-link>
-          <router-link to="/orderManagement" class="py-3 px-4 bg-blue-50 text-blue-500 text-center text-sm">
-            <div class="flex flex-col items-center">
-              <span>Orders</span>
-            </div>
-          </router-link>
-          <router-link to="/reports" class="py-3 px-4 text-gray-500 hover:bg-blue-50 text-center text-sm">
-            <div class="flex flex-col items-center">
-              <span>Reports</span>
-            </div>
-          </router-link>
-          <router-link to="/collaboration" class="py-3 px-4 text-gray-500 hover:bg-blue-50 text-center text-sm">
-            <div class="flex flex-col items-center">
-              <span>Collaboration</span>
-            </div>
-          </router-link>
-          <router-link to="/settings" class="py-3 px-4 text-gray-500 hover:bg-blue-50 text-center text-sm">
-            <div class="flex flex-col items-center">
-              <span>Settings</span>
-            </div>
-          </router-link>
-        </nav>
-      </div>
+      
 
       <!-- Content Area -->
       <div class="flex-1 p-6 bg-gray-50">
