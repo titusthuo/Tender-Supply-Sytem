@@ -1,13 +1,16 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { Icon } from '@iconify/vue'
 
 const props = defineProps({
-  collapsed: {
+  initialCollapsed: {
     type: Boolean,
     default: false
   }
 })
+
+const collapsed = ref(props.initialCollapsed)
 
 const router = useRouter()
 const route = useRoute()
@@ -17,123 +20,66 @@ const menuItems = [
   {
     label: 'Home',
     key: 'home',
-    icon: 'home',
+    icon: 'ph:house-duotone'
   },
   {
     label: 'Buyer',
     key: 'buyers',
-    icon: 'shopping-cart',
+    icon: 'ph:shopping-cart-duotone',
     children: [
       {
         label: 'Dashboard',
         key: 'buyers',
-        icon: 'dashboard'
+        icon: 'ph:chart-pie-slice-duotone'
       },
       {
         label: 'Tenders',
         key: 'tenders',
-        icon: 'file-text'
+        icon: 'ph:file-text-duotone'
       },
-      // {
-      //   label: 'Supplier Management',
-      //   key: 'supplierManagement',
-      //   icon: 'users'
-      // },
       {
         label: 'Contract Management',
         key: 'contractManagement',
-        icon: 'file-contract'
+        icon: 'ph:file-lock-duotone'
       },
       {
         label: 'Order Management',
         key: 'orderManagement',
-        icon: 'shopping-bag'
+        icon: 'ph:shopping-bag-duotone'
       },
-      {
-        label: 'Reports & Compliance',
-        key: 'reportAndCompliance',
-        icon: 'chart-bar'
-      }
     ]
   },
   {
     label: 'Supplier',
     key: 'Supplier',
-    icon: 'shopping-cart',
+    icon: 'ph:storefront-duotone',
     children: [
       {
         label: 'Dashboard',
         key: 'SupplierDashboard',
-        icon: 'dashboard',
-      },
-      {
-        label: 'Products',
-        key: 'SupplierProducts',
-        icon: 'box'
-      },
-      {
-        label: 'Profile',
-        key: 'SupplierProfile',
-        icon: 'users'
+        icon: 'ph:chart-line-duotone',
       },
       {
         label: 'Tenders',
         key: 'SupplierTenders',
-        icon: 'users'
+        icon: 'ph:users-duotone'
       }
     ]
   },
   {
     label: 'Bidding',
     key: 'bidding',
-    icon: 'gavel'
-  },
-  {
-    label: 'Carrier',
-    key: 'carrier',
-    icon: 'truck',
-    children: [
-      {
-        label: 'Dashboard',
-        key: 'carrier',
-        icon: 'dashboard'
-      },
-      {
-        label: 'Request Form',
-        key: 'carrierRequestForm',
-        icon: 'file-alt'
-      },
-      {
-        label: 'Carrier Selection',
-        key: 'carrierSelection',
-        icon: 'truck-loading'
-      },
-      {
-        label: 'Shipment Tracking',
-        key: 'shipmentTracking',
-        icon: 'map-marker'
-      },
-      {
-        label: 'International Shipping',
-        key: 'internationalShipping',
-        icon: 'globe'
-      },
-      {
-        label: 'Registration',
-        key: 'carrierRegistration',
-        icon: 'user-plus'
-      }
-    ]
+    icon: 'ph:scales-duotone'
   },
   {
     label: 'Profile',
     key: 'profile',
-    icon: 'user'
+    icon: 'ph:user-circle-duotone'
   },
   {
     label: 'Role Selection',
     key: 'role',
-    icon: 'user-tag'
+    icon: 'ph:user-switch-duotone'
   }
 ]
 
@@ -181,173 +127,150 @@ function handleMenuSelection(key) {
   router.push({ name: key })
 }
 
-// Function to render icon (you'll need to implement this with your icon library)
-function renderIcon(iconName) {
-  // Placeholder for your icon rendering
-  return `<i class="icon icon-${iconName}"></i>`
+// Toggle sidebar collapse
+function toggleSidebar() {
+  collapsed.value = !collapsed.value
 }
+
+// Computed property to track expanded sections
+const expandedSections = computed(() => {
+  if (collapsed.value) {
+    return [currentKey.value]
+  }
+  return menuItems.map(item => item.key)
+})
 </script>
 
 <template>
-  <div class="sidebar-container">
-    <div class="logo-container">
-      <!-- Your logo here -->
-    </div>
-    
-    <div class="menu-container">
-      <!-- Implement your menu component here -->
-      <ul class="menu-list">
-        <li 
-          v-for="item in menuItems" 
-          :key="item.key"
-          :class="{ 
-            'menu-item': true,
-            'active': currentKey === item.key,
-            'has-children': item.children
-          }"
-          @click="item.children ? null : handleMenuSelection(item.key)"
+  <div 
+    class="fixed top-0 left-0 bottom-0 z-50 transition-all duration-300 ease-in-out"
+    :class="{
+      'w-64': !collapsed,
+      'w-20': collapsed
+    }"
+  >
+    <div 
+      class="flex flex-col h-full bg-gray-100 border-r border-gray-200 
+             shadow-lg transform transition-transform duration-300 ease-in-out"
+      :class="{
+        '-translate-x-full': false,  // Always visible
+        'w-64': !collapsed,
+        'w-20': collapsed
+      }"
+    >
+      <!-- Toggle Button -->
+      <button 
+        @click="toggleSidebar"
+        class="absolute top-4 right-0 translate-x-full bg-gray-200 
+               p-2 rounded-r-lg shadow-md z-50 transition-all duration-300"
+      >
+        <Icon 
+          :icon="collapsed ? 'ph:arrow-right-bold' : 'ph:arrow-left-bold'" 
+          class="w-5 h-5 text-gray-600"
+        />
+      </button>
+
+      <!-- Logo Container -->
+      <div class="flex justify-center items-center p-4 border-b border-gray-200">
+        <div 
+          class="text-xl font-bold text-gray-800"
         >
-          <div class="menu-item-content">
-            <span class="menu-icon" v-html="renderIcon(item.icon)"></span>
-            <span v-if="!collapsed" class="menu-label">{{ item.label }}</span>
-          </div>
-          
-          <ul v-if="item.children && (!collapsed || currentKey === item.key)" class="submenu">
+          {{ collapsed ? 'YL' : 'Your Logo' }}
+        </div>
+      </div>
+
+      <!-- Menu Container -->
+      <div class="flex-grow overflow-y-auto py-4">
+        <nav>
+          <ul class="space-y-1">
             <li 
-              v-for="child in item.children" 
-              :key="child.key"
-              :class="{ 
-                'submenu-item': true,
-                'active': route.name === child.key
-              }"
-              @click.stop="handleMenuSelection(child.key)"
+              v-for="item in menuItems" 
+              :key="item.key"
+              class="px-4"
             >
-              <div class="submenu-item-content">
-                <span class="submenu-icon" v-html="renderIcon(child.icon)"></span>
-                <span v-if="!collapsed" class="submenu-label">{{ child.label }}</span>
+              <!-- Top Level Menu Item -->
+              <div 
+                @click="item.children ? null : handleMenuSelection(item.key)"
+                class="flex items-center p-2 rounded-lg cursor-pointer 
+                       hover:bg-gray-200 
+                       transition-colors duration-200"
+                :class="{
+                  'bg-gray-200': currentKey === item.key
+                }"
+              >
+                <Icon 
+                  :icon="item.icon" 
+                  class="w-5 h-5 mr-3 text-gray-600"
+                />
+                <span 
+                  v-if="!collapsed" 
+                  class="flex-grow text-sm font-medium text-gray-800"
+                >
+                  {{ item.label }}
+                </span>
               </div>
+
+              <!-- Submenu -->
+              <ul 
+                v-if="item.children && 
+                       (!collapsed || currentKey === item.key)"
+                class="mt-1 space-y-1"
+              >
+                <li 
+                  v-for="child in item.children" 
+                  :key="child.key"
+                  class="pl-8"
+                >
+                  <div 
+                    @click="handleMenuSelection(child.key)"
+                    class="flex items-center p-2 rounded-lg cursor-pointer 
+                           hover:bg-gray-200 
+                           transition-colors duration-200"
+                    :class="{
+                      'bg-gray-200': route.name === child.key
+                    }"
+                  >
+                    <Icon 
+                      :icon="child.icon" 
+                      class="w-4 h-4 mr-3 text-gray-600"
+                    />
+                    <span 
+                      v-if="!collapsed" 
+                      class="text-sm text-gray-700"
+                    >
+                      {{ child.label }}
+                    </span>
+                  </div>
+                </li>
+              </ul>
             </li>
           </ul>
-        </li>
-      </ul>
-    </div>
-    
-    <div class="user-profile">
-      <!-- User profile display -->
-      <div class="user-avatar">
-        <!-- Avatar -->
+        </nav>
       </div>
-      <span v-if="!collapsed" class="username">User Name</span>
+
+      <!-- User Profile Section -->
+      <div 
+        class="p-4 border-t border-gray-200 
+               flex items-center space-x-3"
+      >
+        <div 
+          class="w-10 h-10 rounded-full bg-gray-300 
+                 flex items-center justify-center"
+        >
+          <Icon 
+            icon="ph:user-circle-duotone" 
+            class="w-6 h-6 text-gray-600" 
+          />
+        </div>
+        <div v-if="!collapsed" class="flex-grow">
+          <p class="text-sm font-medium text-gray-800">
+            User Name
+          </p>
+          <p class="text-xs text-gray-600">
+            Role
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
-
-<style scoped>
-.sidebar-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  background-color: #f8f9fa;
-}
-
-.logo-container {
-  padding: 1rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.logo {
-  max-width: 150px;
-  height: auto;
-}
-
-.logo-small {
-  max-width: 40px;
-  height: auto;
-}
-
-.menu-container {
-  flex: 1;
-  overflow-y: auto;
-  padding: 1rem 0;
-}
-
-.menu-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.menu-item {
-  padding: 0.75rem 1rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.menu-item:hover {
-  background-color: #e5e7eb;
-}
-
-.menu-item.active {
-  background-color: #e5e7eb;
-  font-weight: 600;
-}
-
-.menu-item-content {
-  display: flex;
-  align-items: center;
-}
-
-.menu-icon {
-  margin-right: 0.75rem;
-}
-
-.submenu {
-  list-style: none;
-  padding: 0;
-  margin: 0.5rem 0 0 1.5rem;
-}
-
-.submenu-item {
-  padding: 0.5rem 0.75rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  border-radius: 4px;
-}
-
-.submenu-item:hover {
-  background-color: #e5e7eb;
-}
-
-.submenu-item.active {
-  background-color: #e5e7eb;
-  font-weight: 600;
-}
-
-.submenu-item-content {
-  display: flex;
-  align-items: center;
-}
-
-.submenu-icon {
-  margin-right: 0.75rem;
-  font-size: 0.85em;
-}
-
-.user-profile {
-  padding: 1rem;
-  display: flex;
-  align-items: center;
-  border-top: 1px solid #e5e7eb;
-}
-
-.user-avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background-color: #ccc;
-  margin-right: 0.75rem;
-}
-</style>

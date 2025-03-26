@@ -1,305 +1,382 @@
-<script setup>
-import { ref, onMounted } from 'vue';
-
-// Mock data for dashboard statistics
-const dashboardStats = ref({
-  activeTenders: 14,
-  tenderChange: 16,
-  suppliersEngaged: 43,
-  supplierChange: 8,
-  openOrders: 8,
-  orderChange: -5,
-  savings: '12.4%',
-  savingsTarget: 3.2
-});
-
-// Mock data for spend analysis chart
-const spendData = ref([
-  { month: 'Jan', actual: 45000, budget: 50000 },
-  { month: 'Feb', actual: 52000, budget: 50000 },
-  { month: 'Mar', actual: 38000, budget: 50000 },
-  { month: 'Apr', actual: 61000, budget: 52000 },
-  { month: 'May', actual: 55000, budget: 52000 },
-  { month: 'Jun', actual: 67000, budget: 54000 },
-  { month: 'Jul', actual: 72000, budget: 56000 },
-  { month: 'Aug', actual: 76000, budget: 58000 }
-]);
-
-// Mock data for supplier performance
-const supplierPerformance = ref([
-  { name: 'TechSupplies Inc.', score: 80 },
-  { name: 'Office Solutions Ltd.', score: 90 },
-  { name: 'Global Logistics Co.', score: 70 },
-  { name: 'ConsultingPros Group', score: 85 }
-]);
-
-// Mock data for recent activity
-const recentActivity = ref([
-  {
-    date: 'Mar 10, 2025',
-    activity: 'IT Equipment Tender Published',
-    department: 'IT Department',
-    status: 'Active'
-  },
-  {
-    date: 'Mar 9, 2025',
-    activity: 'Office Supplies Order Placed',
-    department: 'Operations',
-    status: 'Pending'
-  }
-]);
-
-// Date period options
-const periods = ['Last 7 Days', 'Last 30 Days', 'Last 90 Days', 'This Year'];
-const selectedPeriod = ref('Last 30 Days');
-
-// Welcome message state
-const showWelcome = ref(true);
-const userName = ref('John'); // This would normally come from authentication
-
-// Handle welcome message dismissal
-const dismissWelcome = () => {
-  showWelcome.value = false;
-};
-
-onMounted(() => {
-  // Simulate API calls to fetch real data
-  // In a real application, these would be actual API calls
-  
-  // Auto-dismiss welcome message after 5 seconds
-  setTimeout(() => {
-    showWelcome.value = false;
-  }, 5000);
-});
-</script>
-
 <template>
-  <div class="p-6 bg-gray-50 min-h-screen">
-    <!-- Welcome message for new users -->
-    <div v-if="showWelcome" class="mb-6 bg-blue-50 border-l-4 border-blue-500 p-4 rounded-md flex justify-between items-center">
-      <div>
-        <h3 class="font-medium text-blue-800">Welcome to your Buyer Dashboard, {{ userName }}!</h3>
-        <p class="text-blue-600">Your account has been successfully created. Start by exploring your dashboard or posting your first tender.</p>
-      </div>
-      <button @click="dismissWelcome" class="text-blue-500 hover:text-blue-700">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
-        </svg>
-      </button>
-    </div>
-
-    <!-- Dashboard header -->
-    <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold text-gray-800">Dashboard</h1>
-      <div class="relative">
-        <div class="flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 cursor-pointer">
-          <span class="mr-2 text-sm text-gray-700">Period: {{ selectedPeriod }}</span>
-          <svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-          </svg>
-        </div>
-      </div>
-    </div>
-
-    <!-- Key performance metrics -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-      <!-- Active Tenders -->
-      <div class="bg-white rounded-lg shadow p-6">
-        <h3 class="text-sm font-medium text-gray-500 mb-2">Active Tenders</h3>
-        <div class="flex justify-between items-end">
-          <span class="text-3xl font-bold text-gray-800">{{ dashboardStats.activeTenders }}</span>
-          <span class="flex items-center text-sm" :class="dashboardStats.tenderChange >= 0 ? 'text-green-500' : 'text-red-500'">
-            <svg v-if="dashboardStats.tenderChange >= 0" class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+  <div class="min-h-screen bg-gray-50 p-6">
+    <!-- Topbar with Action Elements -->
+    <div class="bg-white shadow-md rounded-lg mb-6">
+      <div class="flex justify-between items-center p-6 border-b">
+        <h1 class="text-2xl font-bold text-gray-800">buyer Management</h1>
+        <div class="flex items-center space-x-4">
+          <div class="relative">
+            <input 
+              v-model="searchQuery" 
+              type="text" 
+              placeholder="Search buyers..." 
+              class="pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 transition duration-300"
+            >
+            <svg class="absolute left-3 top-3 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
-            <svg v-else class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-            </svg>
-            {{ Math.abs(dashboardStats.tenderChange) }}% vs. last period
-          </span>
-        </div>
-      </div>
-
-      <!-- Suppliers Engaged -->
-      <div class="bg-white rounded-lg shadow p-6">
-        <h3 class="text-sm font-medium text-gray-500 mb-2">Suppliers Engaged</h3>
-        <div class="flex justify-between items-end">
-          <span class="text-3xl font-bold text-gray-800">{{ dashboardStats.suppliersEngaged }}</span>
-          <span class="flex items-center text-sm" :class="dashboardStats.supplierChange >= 0 ? 'text-green-500' : 'text-red-500'">
-            <svg v-if="dashboardStats.supplierChange >= 0" class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-            </svg>
-            <svg v-else class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-            </svg>
-            {{ Math.abs(dashboardStats.supplierChange) }}% vs. last period
-          </span>
-        </div>
-      </div>
-
-      <!-- Open Orders -->
-      <div class="bg-white rounded-lg shadow p-6">
-        <h3 class="text-sm font-medium text-gray-500 mb-2">Open Orders</h3>
-        <div class="flex justify-between items-end">
-          <span class="text-3xl font-bold text-gray-800">{{ dashboardStats.openOrders }}</span>
-          <span class="flex items-center text-sm" :class="dashboardStats.orderChange >= 0 ? 'text-green-500' : 'text-red-500'">
-            <svg v-if="dashboardStats.orderChange >= 0" class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-            </svg>
-            <svg v-else class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-            </svg>
-            {{ Math.abs(dashboardStats.orderChange) }}% vs. last period
-          </span>
-        </div>
-      </div>
-
-      <!-- Savings This Month -->
-      <div class="bg-white rounded-lg shadow p-6">
-        <h3 class="text-sm font-medium text-gray-500 mb-2">Savings This Month</h3>
-        <div class="flex justify-between items-end">
-          <span class="text-3xl font-bold text-gray-800">{{ dashboardStats.savings }}</span>
-          <span class="flex items-center text-sm text-green-500">
-            <svg class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-            </svg>
-            {{ dashboardStats.savingsTarget }}% vs. target
-          </span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Spend Analysis and Supplier Performance -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-      <!-- Spend Analysis -->
-      <div class="bg-white rounded-lg shadow p-6">
-        <h3 class="text-lg font-medium text-gray-800 mb-4">Spend Analysis</h3>
-        <div class="flex justify-end space-x-2 mb-4">
-          <div class="flex items-center">
-            <div class="w-3 h-3 rounded-full bg-blue-500 mr-2"></div>
-            <span class="text-sm text-gray-600">Actual Spend</span>
           </div>
-          <div class="flex items-center">
-            <div class="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
-            <span class="text-sm text-gray-600">Budget</span>
-          </div>
-        </div>
-        <!-- Simulated Chart Area - In a real app, use a charting library -->
-        <div class="h-64 w-full">
-          <div class="relative h-full">
-            <!-- Simplified chart visualization -->
-            <div class="absolute inset-0 flex items-end">
-              <div v-for="(data, index) in spendData" :key="index" class="flex flex-col items-center flex-1">
-                <div class="h-full w-6 flex flex-col justify-end space-y-1">
-                  <div 
-                    class="w-full bg-blue-500 rounded-t" 
-                    :style="{height: `${(data.actual / 80000) * 100}%`}"
-                  ></div>
+          
+          <!-- Filter Dropdown -->
+          <div class="relative">
+            <button 
+              @click="toggleFilterDropdown" 
+              class="flex items-center space-x-2 px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
+            >
+              <svg class="h-5 w-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+              </svg>
+              <span>Filters</span>
+            </button>
+            
+            <!-- Dropdown Content -->
+            <div 
+              v-if="isFilterDropdownOpen" 
+              class="absolute right-0 mt-2 w-64 bg-white border rounded-lg shadow-lg p-4 z-50"
+            >
+              <div class="space-y-3">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                  <select 
+                    v-model="filters.status" 
+                    class="w-full border rounded-lg px-3 py-2"
+                  >
+                    <option value="">All Statuses</option>
+                    <option value="Active">Active</option>
+                    <option value="Pending">Pending Verification</option>
+                    <option value="Blacklisted">Blacklisted</option>
+                  </select>
                 </div>
-                <div class="mt-2 text-xs text-gray-500">{{ data.month }}</div>
+                
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                  <select 
+                    v-model="filters.category" 
+                    class="w-full border rounded-lg px-3 py-2"
+                  >
+                    <option value="">All Categories</option>
+                    <option>IT Services</option>
+                    <option>Office Supplies</option>
+                    <option>Logistics</option>
+                  </select>
+                </div>
+                
+                <button 
+                  @click="applyFilters" 
+                  class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition"
+                >
+                  Apply Filters
+                </button>
               </div>
             </div>
-            <!-- Green line for budget (simplified) -->
-            <div class="absolute inset-0 pointer-events-none">
-              <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="w-full h-full">
-                <path 
-                  d="M0,40 L12.5,38 L25,40 L37.5,39 L50,37 L62.5,35 L75,33 L87.5,30 L100,28" 
-                  stroke="rgb(34, 197, 94)" 
-                  stroke-width="0.5" 
-                  fill="none" 
-                />
-              </svg>
-            </div>
           </div>
-        </div>
-      </div>
-
-      <!-- Top Supplier Performance -->
-      <div class="bg-white rounded-lg shadow p-6">
-        <h3 class="text-lg font-medium text-gray-800 mb-4">Top Supplier Performance</h3>
-        <div class="space-y-4">
-          <div v-for="(supplier, index) in supplierPerformance" :key="index" class="space-y-1">
-            <div class="flex justify-between items-center">
-              <span class="text-sm text-gray-700">{{ supplier.name }}</span>
-              <span class="text-sm text-gray-500">{{ supplier.score }}%</span>
-            </div>
-            <div class="w-full bg-gray-200 rounded-full h-2">
-              <div 
-                class="bg-blue-600 h-2 rounded-full" 
-                :style="{ width: `${supplier.score}%` }"
-              ></div>
-            </div>
-          </div>
+          
+          <!-- Add New buyer Button -->
+          <button 
+            @click="openAddbuyerModal" 
+            class="flex items-center space-x-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
+          >
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            <span>Add New buyer</span>
+          </button>
         </div>
       </div>
     </div>
 
-    <!-- Recent Activity -->
-    <div class="bg-white rounded-lg shadow overflow-hidden">
-      <div class="p-6 pb-3 border-b">
-        <h3 class="text-lg font-medium text-gray-800">Recent Activity</h3>
-      </div>
+    <!-- buyers Table (Previous implementation remains the same) -->
+    <div class="bg-white shadow-md rounded-lg overflow-hidden">
       <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
+        <table class="w-full">
+          <thead class="bg-gray-100 border-b">
             <tr>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Date
-              </th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Activity
-              </th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Department
-              </th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Status
-              </th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
-              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">buyer ID</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Company Name</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categories</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Registration Date</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Performance</th>
+              <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
-            <tr v-for="(activity, index) in recentActivity" :key="index">
+          <tbody class="divide-y divide-gray-200">
+            <tr 
+              v-for="buyer in filteredbuyers" 
+              :key="buyer.id" 
+              class="hover:bg-gray-50 transition"
+            >
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {{ activity.date }}
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                {{ activity.activity }}
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {{ activity.department }}
+                {{ buyer.id }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
-                <span 
-                  class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full" 
-                  :class="activity.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'"
+                <div class="flex items-center">
+                  <img 
+                    :src="buyer.logo" 
+                    class="h-10 w-10 rounded-full mr-3" 
+                  >
+                  <div class="text-sm font-medium text-gray-900">
+                    {{ buyer.companyName }}
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <a 
+                  :href="`mailto:${buyer.email}`" 
+                  class="text-blue-600 hover:text-blue-800 transition-colors duration-200"
                 >
-                  {{ activity.status }}
+                  {{ buyer.email }}
+                </a>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mr-2">
+                  {{ buyer.categories.join(', ') }}
                 </span>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                <button class="text-blue-600 hover:text-blue-800 font-medium">
-                  View
-                </button>
+                {{ buyer.registrationDate }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span 
+                  :class="{
+                    'bg-green-100 text-green-800': buyer.status === 'Active',
+                    'bg-yellow-100 text-yellow-800': buyer.status === 'Pending',
+                    'bg-red-100 text-red-800': buyer.status === 'Blacklisted'
+                  }"
+                  class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                >
+                  {{ buyer.status }}
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <template v-for="n in 5" :key="n">
+                    <svg 
+                      :class="n <= buyer.performanceRating ? 'text-yellow-400' : 'text-gray-300'"
+                      class="h-5 w-5"
+                      fill="currentColor" 
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                    </svg>
+                  </template>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <div class="flex justify-center space-x-2">
+                  <button 
+                    @click="viewbuyerDetails(buyer)" 
+                    class="text-blue-600 hover:text-blue-900 transition-colors duration-200"
+                    title="View Details"
+                  >
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>
+                  </button>
+                  <button 
+                    @click="editbuyer(buyer)" 
+                    class="text-green-600 hover:text-green-900 transition-colors duration-200"
+                    title="Edit buyer"
+                  >
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                  </button>
+                  <button 
+                    @click="togglebuyerStatus(buyer)" 
+                    class="text-red-600 hover:text-red-900 transition-colors duration-200"
+                    title="Toggle Status"
+                  >
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path>
+                    </svg>
+                  </button>
+                </div>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
-      <div v-if="recentActivity.length === 0" class="p-6 text-center text-gray-500">
-        No recent activity to display
+      
+      <!-- Pagination (Previous implementation remains the same) -->
+      <div class="bg-white px-4 py-3 flex items-center justify-between border-t sm:px-6">
+        <div class="flex-1 flex justify-between sm:hidden">
+          <button 
+            @click="prevPage" 
+            class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+          >
+            Previous
+          </button>
+          <button 
+            @click="nextPage" 
+            class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+          >
+            Next
+          </button>
+        </div>
+        <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+          <div>
+            <p class="text-sm text-gray-700">
+              Showing
+              <span class="font-medium">{{ (currentPage - 1) * pageSize + 1 }}</span>
+              to
+              <span class="font-medium">{{ Math.min(currentPage * pageSize, totalbuyers) }}</span>
+              of
+              <span class="font-medium">{{ totalbuyers }}</span>
+              results
+            </p>
+          </div>
+          <div>
+            <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+              <button 
+                @click="prevPage" 
+                :disabled="currentPage === 1"
+                class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+              >
+                <span class="sr-only">Previous</span>
+                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+              </button>
+              <template v-for="page in pageNumbers" :key="page">
+                <button 
+                  @click="goToPage(page)"
+                  :class="{
+                    'bg-blue-50 border-blue-500 text-blue-600': currentPage === page,
+                    'border-gray-300 text-gray-500 hover:bg-gray-50': currentPage !== page
+                  }"
+                  class="relative inline-flex items-center px-4 py-2 border text-sm font-medium"
+                >
+                  {{ page }}
+                </button>
+              </template>
+              <button 
+                @click="nextPage" 
+                :disabled="currentPage === totalPages"
+                class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+              >
+                <span class="sr-only">Next</span>
+                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                </svg>
+              </button>
+            </nav>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Quick Actions Button -->
-    <div class="fixed bottom-6 right-6">
-      <button class="bg-purple-600 text-white rounded-full p-4 shadow-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-        </svg>
-      </button>
-    </div>
+    <!-- Add buyer Slider -->
+    <buyerAddSlider 
+      :is-open="isAddbuyerModalOpen" 
+      @close="closeAddbuyerModal"
+      @add-buyer="addNewbuyer"
+    />
   </div>
 </template>
+
+<script setup>
+import { ref, computed } from 'vue'
+import buyerAddSlider from './buyerAddSlider.vue'
+
+// buyer Data (Previous implementation remains the same)
+const buyers = ref([
+  {
+    id: 'VEN001',
+    companyName: 'TechSupplies Inc.',
+    email: 'contact@techsupplies.com',
+    logo: '/api/placeholder/40/40',
+    categories: ['IT Services'],
+    registrationDate: '2024-01-15',
+    status: 'Active',
+    performanceRating: 4
+  },
+  // ... other buyers
+])
+
+// Search and Filtering (Previous implementation remains the same)
+const searchQuery = ref('')
+const filters = ref({
+  status: '',
+  category: ''
+})
+const isFilterDropdownOpen = ref(false)
+
+const filteredbuyers = computed(() => {
+  return buyers.value.filter(buyer => {
+    const matchesSearch = buyer.companyName.toLowerCase().includes(searchQuery.value.toLowerCase())
+    const matchesStatus = !filters.value.status || buyer.status === filters.value.status
+    const matchesCategory = !filters.value.category || buyer.categories.includes(filters.value.category)
+    
+    return matchesSearch && matchesStatus && matchesCategory
+  })
+})
+
+// Pagination (Previous implementation remains the same)
+const currentPage = ref(1)
+const pageSize = ref(10)
+const totalbuyers = computed(() => filteredbuyers.value.length)
+const totalPages = computed(() => Math.ceil(totalbuyers.value / pageSize.value))
+
+const pageNumbers = computed(() => {
+  const pages = []
+  for (let i = 1; i <= totalPages.value; i++) {
+    pages.push(i)
+  }
+  return pages
+})
+
+// buyer Modal Management
+const isAddbuyerModalOpen = ref(false)
+
+const openAddbuyerModal = () => {
+  isAddbuyerModalOpen.value = true
+}
+
+const closeAddbuyerModal = () => {
+  isAddbuyerModalOpen.value = false
+}
+
+const addNewbuyer = (newbuyer) => {
+  buyers.value.unshift(newbuyer)
+}
+
+// Existing methods (Previous implementation remains the same)
+const toggleFilterDropdown = () => {
+  isFilterDropdownOpen.value = !isFilterDropdownOpen.value
+}
+
+const applyFilters = () => {
+  isFilterDropdownOpen.value = false
+}
+
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--
+  }
+}
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++
+  }
+}
+
+const goToPage = (page) => {
+  currentPage.value = page
+}
+
+const viewbuyerDetails = (buyer) => {
+  console.log('View buyer Details', buyer)
+}
+
+const editbuyer = (buyer) => {
+  console.log('Edit buyer', buyer)
+}
+
+const togglebuyerStatus = (buyer) => {
+  console.log('Toggle buyer Status', buyer)
+}
+</script>

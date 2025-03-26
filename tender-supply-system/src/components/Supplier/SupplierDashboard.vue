@@ -1,137 +1,405 @@
 <template>
-  <div class="min-h-screen flex flex-col">
-    <!-- Top navigation bar -->
-    <header class="bg-blue-500 text-white py-4 px-6 flex justify-between items-center">
-      <h1 class="text-2xl font-bold">Supplier Portal</h1>
-      <div class="flex items-center space-x-2">
-        <button class="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-          <span class="text-blue-500">👤</span>
-        </button>
-        <button class="w-8 h-8 bg-white rounded-full flex items-center justify-center text-blue-500">?</button>
+  <div class="min-h-screen bg-gray-50 p-6">
+    <!-- Topbar with Action Elements -->
+    <div class="bg-white shadow-md rounded-lg mb-6">
+      <div class="flex justify-between items-center p-6 border-b">
+        <h1 class="text-2xl font-bold text-gray-800">Supplier Management</h1>
+        <div class="flex items-center space-x-4">
+          <div class="relative">
+            <input 
+              v-model="searchQuery" 
+              type="text" 
+              placeholder="Search suppliers..." 
+              class="pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 transition duration-300"
+            >
+            <svg class="absolute left-3 top-3 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+          </div>
+          
+          <!-- Filter Dropdown -->
+          <div class="relative">
+            <button 
+              @click="toggleFilterDropdown" 
+              class="flex items-center space-x-2 px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition"
+            >
+              <svg class="h-5 w-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+              </svg>
+              <span>Filters</span>
+            </button>
+            
+            <!-- Dropdown Content -->
+            <div 
+              v-if="isFilterDropdownOpen" 
+              class="absolute right-0 mt-2 w-64 bg-white border rounded-lg shadow-lg p-4 z-50"
+            >
+              <div class="space-y-3">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                  <select 
+                    v-model="filters.status" 
+                    class="w-full border rounded-lg px-3 py-2"
+                  >
+                    <option value="">All Statuses</option>
+                    <option value="Active">Active</option>
+                    <option value="Pending">Pending Verification</option>
+                    <option value="Suspended">Suspended</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Business Type</label>
+                  <select 
+                    v-model="filters.businessType" 
+                    class="w-full border rounded-lg px-3 py-2"
+                  >
+                    <option value="">All Business Types</option>
+                    <option>IT Services</option>
+                    <option>Consulting</option>
+                    <option>Manufacturing</option>
+                  </select>
+                </div>
+                
+                <button 
+                  @click="applyFilters" 
+                  class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition"
+                >
+                  Apply Filters
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Add New Supplier Button -->
+          <button 
+            @click="openAddSupplierModal" 
+            class="flex items-center space-x-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
+          >
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            <span>Add New Supplier</span>
+          </button>
+        </div>
       </div>
-    </header>
-
-    <div class="flex flex-1">
-
-      <!-- Main content area -->
-      <main class="flex-1 p-6 bg-gray-50 border border-gray-200">
-        <h2 class="text-2xl font-bold mb-6">Supplier Dashboard</h2>
-        
-        <!-- Summary cards -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <div class="bg-white border rounded-md p-4">
-            <div class="text-gray-600 mb-2">Active Products</div>
-            <div class="flex justify-between items-center">
-              <div class="text-4xl font-bold">24</div>
-              <div class="text-green-500">
-                <svg width="40" height="30" viewBox="0 0 40 30" class="text-green-600">
-                  <path d="M0,20 L10,15 L20,25 L30,5 L40,10" 
-                        fill="none" 
-                        stroke="currentColor" 
-                        stroke-width="2" />
-                </svg>
-              </div>
-            </div>
-          </div>
-          
-          <div class="bg-white border rounded-md p-4">
-            <div class="text-gray-600 mb-2">Available Tenders</div>
-            <div class="flex justify-between items-end">
-              <div class="text-4xl font-bold">7</div>
-              <div class="text-green-600 text-sm">+2 New</div>
-            </div>
-          </div>
-          
-          <div class="bg-white border rounded-md p-4">
-            <div class="text-gray-600 mb-2">Pending Orders</div>
-            <div class="flex justify-between items-end">
-              <div class="text-4xl font-bold">3</div>
-              <div class="text-orange-500 text-sm">1 Urgent</div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Recent Activity -->
-        <div class="mb-8">
-          <h3 class="text-xl font-bold mb-4">Recent Activity</h3>
-          
-          <div class="bg-white border border-blue-300 rounded-md overflow-hidden">
-            <div class="bg-blue-100 text-blue-800 py-2 px-4 border-b grid grid-cols-4">
-              <div>Type</div>
-              <div>Item</div>
-              <div>Date</div>
-              <div>Status</div>
-            </div>
-            <div class="divide-y">
-              <div class="grid grid-cols-4 py-3 px-4">
-                <div>Tender</div>
-                <div>Office Supplies Q2</div>
-                <div>Mar 10, 2025</div>
-                <div>
-                  <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">Open</span>
-                </div>
-              </div>
-              <div class="grid grid-cols-4 py-3 px-4">
-                <div>Product</div>
-                <div>HP LaserJet Printer</div>
-                <div>Mar 9, 2025</div>
-                <div>
-                  <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">Updated</span>
-                </div>
-              </div>
-              <div class="grid grid-cols-4 py-3 px-4">
-                <div>Order</div>
-                <div>Order #4592 - Acme Inc.</div>
-                <div>Mar 8, 2025</div>
-                <div>
-                  <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm">Pending</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Quick Actions -->
-        <div class="mb-8">
-          <h3 class="text-xl font-bold mb-4">Quick Actions</h3>
-          
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-    <router-link :to="{ name: 'SupplierProducts' }" class="py-3 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-md text-center">
-      Add Product
-    </router-link>
-    <router-link :to="{ name: 'SupplierTenders' }" class="py-3 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-md text-center">
-      View Tenders
-    </router-link>
-    <router-link :to="{ name: 'orderManagement' }" class="py-3 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-md text-center">
-      View Orders
-    </router-link>
-  </div>
-        </div>
-        
-        <!-- Alerts & Notifications -->
-        <div>
-          <h3 class="text-xl font-bold mb-4">Alerts & Notifications</h3>
-          
-          <div class="bg-green-100 border border-green-200 rounded-md p-4 flex justify-between items-center">
-            <div>
-              <div class="font-semibold text-green-800">New Tender Opportunity</div>
-              <div class="text-green-700">A new tender matching your product categories is available. Deadline: March 20, 2025</div>
-            </div>
-            <button class="bg-green-600 text-white py-2 px-4 rounded-md text-sm">View Now</button>
-          </div>
-        </div>
-      </main>
     </div>
-  </div>
-</template>c
 
-<script>
-export default {
-  name: 'SupplierDashboard',
-  data() {
-    return {
-      // Data would be added here for a real application
-    }
+    <!-- Suppliers Table -->
+    <div class="bg-white shadow-md rounded-lg overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead class="bg-gray-100 border-b">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Supplier ID</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Company Name</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Business Type</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Registration Date</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Performance</th>
+              <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            <tr 
+              v-for="supplier in filteredSuppliers" 
+              :key="supplier.id" 
+              class="hover:bg-gray-50 transition"
+            >
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {{ supplier.id }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <img 
+                    :src="supplier.logo" 
+                    class="h-10 w-10 rounded-full mr-3" 
+                   
+                  >
+                  <button 
+                    @click="viewSupplierDetails(supplier)"
+                    class="text-blue-600 hover:underline hover:text-blue-800 font-medium text-left"
+                  >
+                    {{ supplier.companyName }}
+                  </button>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <a 
+                  :href="`mailto:${supplier.email}`" 
+                  class="text-blue-600 hover:text-blue-800 transition-colors duration-200"
+                >
+                  {{ supplier.email }}
+                </a>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                  {{ supplier.businessType }}
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {{ supplier.registrationDate }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span 
+                  :class="{
+                    'bg-green-100 text-green-800': supplier.status === 'Active',
+                    'bg-yellow-100 text-yellow-800': supplier.status === 'Pending',
+                    'bg-red-100 text-red-800': supplier.status === 'Suspended'
+                  }"
+                  class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                >
+                  {{ supplier.status }}
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <template v-for="n in 5" :key="n">
+                    <svg 
+                      :class="n <= supplier.performanceRating ? 'text-yellow-400' : 'text-gray-300'"
+                      class="h-5 w-5"
+                      fill="currentColor" 
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                    </svg>
+                  </template>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <div class="flex justify-center space-x-2">
+                  <button 
+                    @click="viewSupplierDetails(supplier)" 
+                    class="text-blue-600 hover:text-blue-900 transition-colors duration-200"
+                    title="View Details"
+                  >
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>
+                  </button>
+                  <button 
+                    @click="editSupplier(supplier)" 
+                    class="text-green-600 hover:text-green-900 transition-colors duration-200"
+                    title="Edit Supplier"
+                  >
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                  </button>
+                  <button 
+                    @click="toggleSupplierStatus(supplier)" 
+                    class="text-red-600 hover:text-red-900 transition-colors duration-200"
+                    title="Toggle Status"
+                  >
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path>
+                    </svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Pagination -->
+      <div class="bg-white px-4 py-3 flex items-center justify-between border-t sm:px-6">
+        <div class="flex-1 flex justify-between sm:hidden">
+          <button 
+            @click="prevPage" 
+            class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+          >
+            Previous
+          </button>
+          <button 
+            @click="nextPage" 
+            class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+          >
+            Next
+          </button>
+        </div>
+        <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+          <div>
+            <p class="text-sm text-gray-700">
+              Showing
+              <span class="font-medium">{{ (currentPage - 1) * pageSize + 1 }}</span>
+              to
+              <span class="font-medium">{{ Math.min(currentPage * pageSize, totalSuppliers) }}</span>
+              of
+              <span class="font-medium">{{ totalSuppliers }}</span>
+              results
+            </p>
+          </div>
+          <div>
+            <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+              <button 
+                @click="prevPage" 
+                :disabled="currentPage === 1"
+                class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+              >
+                <span class="sr-only">Previous</span>
+                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+              </button>
+              <template v-for="page in pageNumbers" :key="page">
+                <button 
+                  @click="goToPage(page)"
+                  :class="{
+                    'bg-blue-50 border-blue-500 text-blue-600': currentPage === page,
+                    'border-gray-300 text-gray-500 hover:bg-gray-50': currentPage !== page
+                  }"
+                  class="relative inline-flex items-center px-4 py-2 border text-sm font-medium"
+                >
+                  {{ page }}
+                </button>
+              </template>
+              <button 
+                @click="nextPage" 
+                :disabled="currentPage === totalPages"
+                class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+              >
+                <span class="sr-only">Next</span>
+                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                </svg>
+              </button>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Supplier Slider (to be implemented) -->
+    <SupplierAddSlider 
+      :is-open="isAddSupplierModalOpen" 
+      @close="closeAddSupplierModal"
+      @add-supplier="addNewSupplier"
+    />
+  </div>
+</template>
+
+<script setup>
+import { ref, computed } from 'vue'
+import SupplierAddSlider from './SupplierAddSlider.vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+// Supplier Data (using the registration form details)
+const suppliers = ref([
+  {
+    id: 'SUP001',
+    companyName: 'TechServices Ltd.',
+    email: 'contact@techservices.com',
+    logo: '/api/placeholder/40/40',
+    businessType: 'IT Services',
+    registrationDate: '2024-01-15',
+    status: 'Active',
+    performanceRating: 4,
+    servicesOffered: 'Cloud Solutions',
+    registrationNumber: 'REG12345',
+    yearsInBusiness: 5
+  },
+  // Add more sample suppliers as needed
+])
+
+// Search and Filtering
+const searchQuery = ref('')
+const filters = ref({
+  status: '',
+  businessType: ''
+})
+const isFilterDropdownOpen = ref(false)
+
+const filteredSuppliers = computed(() => {
+  return suppliers.value.filter(supplier => {
+    const matchesSearch = supplier.companyName.toLowerCase().includes(searchQuery.value.toLowerCase())
+    const matchesStatus = !filters.value.status || supplier.status === filters.value.status
+    const matchesBusinessType = !filters.value.businessType || supplier.businessType === filters.value.businessType
+    
+    return matchesSearch && matchesStatus && matchesBusinessType
+  })
+})
+
+// Pagination
+const currentPage = ref(1)
+const pageSize = ref(10)
+const totalSuppliers = computed(() => filteredSuppliers.value.length)
+const totalPages = computed(() => Math.ceil(totalSuppliers.value / pageSize.value))
+
+const pageNumbers = computed(() => {
+  const pages = []
+  for (let i = 1; i <= totalPages.value; i++) {
+    pages.push(i)
   }
+  return pages
+})
+
+// Supplier Modal Management
+const isAddSupplierModalOpen = ref(false)
+
+const openAddSupplierModal = () => {
+  isAddSupplierModalOpen.value = true
+}
+
+const closeAddSupplierModal = () => {
+  isAddSupplierModalOpen.value = false
+}
+
+const addNewSupplier = (newSupplier) => {
+  suppliers.value.unshift({
+    ...newSupplier,
+    id: `SUP${suppliers.value.length + 1}`.padStart(4, '0'),
+    registrationDate: new Date().toISOString().split('T')[0],
+    status: 'Pending',
+    performanceRating: 0,
+    logo: '/api/placeholder/40/40'
+  })
+  closeAddSupplierModal()
+}
+
+// Other methods
+const toggleFilterDropdown = () => {
+  isFilterDropdownOpen.value = !isFilterDropdownOpen.value
+}
+
+const applyFilters = () => {
+  isFilterDropdownOpen.value = false
+}
+
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--
+  }
+}
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++
+  }
+}
+
+const goToPage = (page) => {
+  currentPage.value = page
+}
+
+const viewSupplierDetails = (supplier) => {
+  router.push({ 
+    name: 'SupplierDetails', 
+    params: { id: supplier.id } 
+  })
+}
+
+const editSupplier = (supplier) => {
+  console.log('Edit Supplier', supplier)
+  // Implement edit functionality
+}
+
+const toggleSupplierStatus = (supplier) => {
+  console.log('Toggle Supplier Status', supplier)
+  // Implement status toggling logic
 }
 </script>

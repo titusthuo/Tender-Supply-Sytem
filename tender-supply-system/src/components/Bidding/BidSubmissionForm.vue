@@ -1,176 +1,340 @@
 <!-- src/components/Bidding/BidSubmissionForm.vue -->
 <template>
-  <div class="min-h-screen flex flex-col bg-white">
+  <div class="min-h-screen flex flex-col bg-gray-50">
     <!-- Header -->
-    <div class="bg-blue-600 text-white p-4 shadow-md">
-      <div class="container mx-auto flex justify-between items-center">
-        <h1 class="text-2xl font-bold">Bidding System Dashboard</h1>
-        <div class="text-sm text-blue-200">Pending Bids</div>
+    <header class="bg-gradient-to-r from-blue-600 to-blue-800 text-white shadow-md">
+      <div class="container mx-auto px-4 py-6 flex justify-between items-center">
+        <h1 class="text-3xl font-bold tracking-tight">Bid Submission Portal</h1>
+        <div class="flex items-center space-x-4">
+          <span class="text-sm text-blue-200">Welcome, Bidder</span>
+          <button 
+            class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-md transition-colors"
+            @click="resetForm"
+          >
+            Reset Form
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Progress Stepper -->
+    <div class="container mx-auto px-4 mt-6">
+      <div class="flex justify-between items-center space-x-4">
+        <div 
+          v-for="(step, index) in steps" 
+          :key="index" 
+          class="flex-1 flex items-center"
+          :class="{
+            'opacity-50': currentStep < index,
+            'font-bold text-blue-600': currentStep === index
+          }"
+        >
+          <div 
+            class="w-10 h-10 rounded-full flex items-center justify-center mr-3 border-2"
+            :class="{
+              'bg-blue-600 text-white border-blue-600': currentStep >= index,
+              'border-gray-300': currentStep < index
+            }"
+          >
+            {{ index + 1 }}
+          </div>
+          <span>{{ step }}</span>
+        </div>
       </div>
     </div>
 
-    <!-- Notification System -->
-    <BidNotification
-      :show="showNotification"
-      :title="notification.title"
-      :message="notification.message"
-      :type="notification.type"
-      :bid-details="submittedBidData"
-      :auto-close="false"
-      @close="hideNotification"
-      @track-bid="handleTrackBid"
-      @new-bid="handleNewBid"
-    />
+    <!-- Bid Submission Form -->
+    <div class="container mx-auto px-4 py-8 flex-1">
+      <form 
+        @submit.prevent="submitBid" 
+        class="bg-white rounded-xl shadow-lg p-8 max-w-2xl mx-auto"
+      >
+        <!-- Step 1: Company Details -->
+        <div v-if="currentStep === 0" class="space-y-6">
+          <h2 class="text-2xl font-semibold text-gray-800 mb-6">Company Information</h2>
+          
+          <div class="grid md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Company Name</label>
+              <input 
+                v-model="companyDetails.name"
+                class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter company name"
+                required
+              />
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Registration Number</label>
+              <input 
+                v-model="companyDetails.registrationNumber"
+                class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+                placeholder="Company registration ID"
+                required
+              />
+            </div>
+          </div>
+          
+          <div class="grid md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Contact Person</label>
+              <input 
+                v-model="companyDetails.contactPerson"
+                class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+                placeholder="Name of primary contact"
+                required
+              />
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+              <input 
+                v-model="companyDetails.email"
+                type="email"
+                class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+                placeholder="contact@company.com"
+                required
+              />
+            </div>
+          </div>
+        </div>
 
-    <!-- Horizontal Navigation Menu -->
-    <div class="bg-white border-b border-gray-200 shadow-sm">
-      <div class="container mx-auto py-3">
-        <nav class="flex space-x-8">
-          <button 
-            @click="$emit('view-change', 'submission')" 
-            class="px-4 py-2 font-medium text-blue-600 border-b-2 border-blue-600 hover:text-blue-800 transition-colors duration-200"
-          >
-            Bid Submission
-          </button>
-          <button 
-            @click="$emit('view-change', 'tracking')" 
-            class="px-4 py-2 font-medium text-gray-600 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 transition-colors duration-200"
-          >
-            Status Tracking
-          </button>
-          <button 
-            @click="$emit('view-change', 'history')" 
-            class="px-4 py-2 font-medium text-gray-600 hover:text-blue-600 hover:border-b-2 hover:border-blue-600 transition-colors duration-200"
-          >
-            Bid History
-          </button>
-        </nav>
-      </div>
-    </div>
-    <!-- Bid Form -->
-    <div class="flex-1 bg-gray-50">
-      <div class="container mx-auto p-8 max-w-3xl">
-        <h2 class="text-xl font-semibold mb-6 text-gray-800">Bid Submission Form</h2>
-        <form @submit.prevent="submitBid" class="bg-white p-6 rounded-lg shadow">
-          <div class="mb-6">
-            <label class="block text-sm font-medium text-gray-700 mb-2">Project Title:</label>
+        <!-- Step 2: Bid Details -->
+        <div v-if="currentStep === 1" class="space-y-6">
+          <h2 class="text-2xl font-semibold text-gray-800 mb-6">Bid Proposal Details</h2>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Project Title</label>
             <input 
-              v-model="bidData.projectTitle"
-              class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              v-model="bidDetails.projectTitle"
+              class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
               placeholder="Office Building Renovation Project"
               required
             />
           </div>
           
-          <div class="mb-6">
-            <label class="block text-sm font-medium text-gray-700 mb-2">Bid Amount ($):</label>
-            <input 
-              v-model="bidData.bidAmount"
-              type="number"
-              step="0.01"
-              min="0"
-              class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              placeholder="125,000.00"
-              required
-            />
+          <div class="grid md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Bid Amount ($)</label>
+              <input 
+                v-model="bidDetails.bidAmount"
+                type="number"
+                step="0.01"
+                min="0"
+                class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+                placeholder="125,000.00"
+                required
+              />
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Project Duration</label>
+              <input 
+                v-model="bidDetails.projectDuration"
+                type="text"
+                class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+                placeholder="e.g., 3 months"
+                required
+              />
+            </div>
           </div>
           
-          <div class="mb-6">
-            <label class="block text-sm font-medium text-gray-700 mb-2">Bid Description:</label>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Bid Description</label>
             <textarea 
-              v-model="bidData.bidDescription"
+              v-model="bidDetails.description"
               rows="5"
-              class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Complete renovation of 3rd floor offices including..."
+              class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+              placeholder="Provide a comprehensive description of your proposed solution..."
               required
             ></textarea>
           </div>
+        </div>
+
+        <!-- Step 3: Supporting Documents -->
+        <div v-if="currentStep === 2" class="space-y-6">
+          <h2 class="text-2xl font-semibold text-gray-800 mb-6">Supporting Documents</h2>
           
-          <div class="mb-6">
-            <label class="block text-sm font-medium text-gray-700 mb-2">Supporting Documents:</label>
-            <div 
-              class="w-full p-8 bg-gray-50 border-2 border-dashed border-gray-300 rounded-md text-center text-gray-500 cursor-pointer hover:bg-gray-100 transition-colors duration-200"
-              @click="openFileDialog"
-              @dragover.prevent
-              @drop.prevent="handleFileDrop"
-            >
-              <div class="space-y-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                </svg>
-                <p class="text-sm">Drag files here or click to upload</p>
-                <p class="text-xs text-gray-400">(PDF, Word, Excel documents)</p>
+          <div 
+            class="w-full p-8 bg-gray-50 border-2 border-dashed border-gray-300 rounded-md text-center cursor-pointer hover:bg-gray-100 transition-colors"
+            @click="triggerFileUpload"
+            @dragover.prevent
+            @drop.prevent="handleFileDrop"
+          >
+            <div class="space-y-4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+              </svg>
+              <p class="text-gray-600">Drag and drop files here or click to upload</p>
+              <p class="text-xs text-gray-500">Accepted file types: PDF, Word, Excel (Max 10MB per file)</p>
+            </div>
+          </div>
+          
+          <input 
+            type="file" 
+            ref="fileInput"
+            class="hidden" 
+            multiple 
+            @change="handleFileUpload"
+          />
+          
+          <div v-if="uploadedFiles.length" class="mt-4">
+            <h3 class="text-md font-medium text-gray-700 mb-2">Uploaded Files:</h3>
+            <ul class="space-y-2">
+              <li 
+                v-for="(file, index) in uploadedFiles" 
+                :key="index" 
+                class="flex justify-between items-center bg-blue-50 p-3 rounded-md"
+              >
+                <div class="flex items-center space-x-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <span class="text-sm text-gray-700">{{ file.name }}</span>
+                </div>
+                <span class="text-xs text-gray-500">{{ formatFileSize(file.size) }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Step 4: Review & Submit -->
+        <div v-if="currentStep === 3" class="space-y-6">
+          <h2 class="text-2xl font-semibold text-gray-800 mb-6">Review Submission</h2>
+          
+          <div class="bg-gray-50 p-6 rounded-lg">
+            <h3 class="text-lg font-medium text-gray-800 mb-4">Bid Summary</h3>
+            
+            <div class="grid md:grid-cols-2 gap-4">
+              <div>
+                <p class="text-sm text-gray-600">Company Name</p>
+                <p class="font-semibold">{{ companyDetails.name }}</p>
+              </div>
+              <div>
+                <p class="text-sm text-gray-600">Contact Person</p>
+                <p class="font-semibold">{{ companyDetails.contactPerson }}</p>
+              </div>
+              <div>
+                <p class="text-sm text-gray-600">Project Title</p>
+                <p class="font-semibold">{{ bidDetails.projectTitle }}</p>
+              </div>
+              <div>
+                <p class="text-sm text-gray-600">Bid Amount</p>
+                <p class="font-semibold">${{ bidDetails.bidAmount }}</p>
               </div>
             </div>
-            <input
-              type="file"
-              ref="fileInput"
-              class="hidden"
-              @change="handleFileSelect"
-              multiple
-            />
-            
-            <div v-if="uploadedFiles.length > 0" class="mt-4 bg-blue-50 p-4 rounded-md border border-blue-100">
-              <h4 class="text-sm font-medium text-gray-700 mb-2">Uploaded Files:</h4>
-              <ul class="space-y-2">
-                <li v-for="(file, index) in uploadedFiles" :key="index" class="flex items-center justify-between text-sm">
-                  <div class="flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    <span class="text-gray-700">{{ file.name }}</span>
-                  </div>
-                  <span class="text-gray-500 text-xs">{{ formatFileSize(file.size) }}</span>
-                </li>
-              </ul>
-            </div>
           </div>
           
-          <div class="flex justify-end">
-            <button 
-              type="submit"
-              class="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 font-medium"
-              :disabled="isSubmitting"
-            >
-              <span v-if="isSubmitting">Submitting...</span>
-              <span v-else>Submit Bid</span>
-            </button>
+          <div class="flex items-center space-x-3">
+            <input 
+              type="checkbox" 
+              v-model="termsAccepted"
+              class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            />
+            <label class="text-sm text-gray-700">
+              I confirm that all information provided is accurate and I agree to the terms of submission
+            </label>
           </div>
-        </form>
-      </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="flex justify-between mt-8">
+          <button 
+            type="button" 
+            v-if="currentStep > 0"
+            @click="prevStep"
+            class="px-6 py-3 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
+          >
+            Previous
+          </button>
+          
+          <button 
+            type="button" 
+            v-if="currentStep < 3"
+            @click="nextStep"
+            class="ml-auto px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+          >
+            Next
+          </button>
+          
+          <button 
+            type="submit" 
+            v-if="currentStep === 3"
+            :disabled="!termsAccepted"
+            class="ml-auto px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:opacity-50"
+          >
+            Submit Bid
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue';
-import BidNotification from './BidNotification.vue';
+import { ref, reactive } from 'vue';
+import { useRouter } from 'vue-router'; 
 
-const emit = defineEmits(['submit-bid', 'view-change']);
+const router = useRouter();
 
-const bidData = reactive({
+const steps = [
+  'Company Details', 
+  'Bid Details', 
+  'Supporting Documents', 
+  'Review & Submit'
+];
+
+const currentStep = ref(0);
+const termsAccepted = ref(false);
+const uploadedFiles = ref([]);
+const fileInput = ref(null);
+
+const companyDetails = reactive({
+  name: '',
+  registrationNumber: '',
+  contactPerson: '',
+  email: ''
+});
+
+const bidDetails = reactive({
   projectTitle: '',
   bidAmount: '',
-  bidDescription: '',
+  projectDuration: '',
+  description: ''
 });
 
-const fileInput = ref(null);
-const uploadedFiles = ref([]);
-const isSubmitting = ref(false);
-const showNotification = ref(false);
-const submittedBidData = ref({});
+const nextStep = () => {
+  if (validateCurrentStep()) {
+    currentStep.value = Math.min(currentStep.value + 1, steps.length - 1);
+  }
+};
 
-const notification = reactive({
-  title: '',
-  message: '',
-  type: 'success'
-});
+const prevStep = () => {
+  currentStep.value = Math.max(currentStep.value - 1, 0);
+};
 
-const openFileDialog = () => {
+const validateCurrentStep = () => {
+  switch (currentStep.value) {
+    case 0:
+      return companyDetails.name && 
+             companyDetails.registrationNumber && 
+             companyDetails.contactPerson && 
+             companyDetails.email;
+    case 1:
+      return bidDetails.projectTitle && 
+             bidDetails.bidAmount && 
+             bidDetails.projectDuration && 
+             bidDetails.description;
+    default:
+      return true;
+  }
+};
+
+const triggerFileUpload = () => {
   fileInput.value.click();
 };
 
-const handleFileSelect = (event) => {
+const handleFileUpload = (event) => {
   const files = Array.from(event.target.files);
   uploadedFiles.value = [...uploadedFiles.value, ...files];
 };
@@ -181,107 +345,46 @@ const handleFileDrop = (event) => {
 };
 
 const formatFileSize = (bytes) => {
-  if (bytes < 1024) return bytes + ' bytes';
-  else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
-  else return (bytes / 1048576).toFixed(1) + ' MB';
+  if (bytes < 1024) return `${bytes} bytes`;
+  if (bytes < 1048576) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / 1048576).toFixed(1)} MB`;
 };
 
-const validateForm = () => {
-  if (!bidData.projectTitle.trim()) {
-    showErrorNotification('Missing Project Title', 'Please enter a project title for your bid.');
-    return false;
+const submitBid = () => {
+  if (!termsAccepted.value) {
+    alert('Please accept the terms before submitting');
+    return;
   }
-  
-  const cleanBidAmount = bidData.bidAmount.toString().replace(/,/g, '');
-  if (!cleanBidAmount || isNaN(cleanBidAmount) || parseFloat(cleanBidAmount) <= 0) {
-    showErrorNotification('Invalid Bid Amount', 'Please enter a valid bid amount greater than zero.');
-    return false;
-  }
-  
-  if (!bidData.bidDescription.trim()) {
-    showErrorNotification('Missing Description', 'Please enter a description for your bid.');
-    return false;
-  }
-  
-  return true;
-};
 
-const showErrorNotification = (title, message) => {
-  notification.title = title;
-  notification.message = message;
-  notification.type = 'error';
-  showNotification.value = true;
-};
-
-const submitBid = async () => {
-  if (!validateForm()) return;
-  
-  isSubmitting.value = true;
-  
-  // Prepare the bid data object including files information
-  const completeData = {
-    ...bidData,
-    files: uploadedFiles.value.map(file => ({
+  const bidSubmission = {
+    companyDetails,
+    bidDetails,
+    uploadedFiles: uploadedFiles.value.map(file => ({
       name: file.name,
       size: file.size,
       type: file.type
     }))
   };
-  
-  try {
-    // Simulate API call with a delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Generate Bid ID
-    const bidId = `BID-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 10000)).padStart(4, '0')}`;
-    
-    // Format submission date
-    const now = new Date();
-    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-    const submissionDate = now.toLocaleDateString('en-US', options);
-    
-    // Store the submitted data with additional information
-    submittedBidData.value = { 
-      ...completeData,
-      bidId,
-      submissionDate
-    };
-    
-    // Display success notification
-    notification.title = 'Bid Successfully Submitted!';
-    notification.message = 'Your bid has been received and is now being processed. You\'ll receive email notifications at each review stage.';
-    notification.type = 'success';
-    showNotification.value = true;
-    
-    // Emit the event with the bid data
-    emit('submit-bid', submittedBidData.value);
-    
-  } catch (error) {
-    console.error('Error submitting bid:', error);
-    showErrorNotification('Error Submitting Bid', 'There was an error submitting your bid. Please try again later.');
-  } finally {
-    isSubmitting.value = false;
-  }
-};
 
-const hideNotification = () => {
-  showNotification.value = false;
-};
+  // Store bid submission details in localStorage
+  localStorage.setItem('submittedBid', JSON.stringify(bidSubmission));
 
-const handleTrackBid = () => {
-  hideNotification();
-  emit('view-change', 'tracking');
-};
+  // Use Vue Router to navigate to confirmation page
+  router.push({ name: 'bidConfirmation' });
 
-const handleNewBid = () => {
-  hideNotification();
-  resetForm();
 };
 
 const resetForm = () => {
-  bidData.projectTitle = '';
-  bidData.bidAmount = '';
-  bidData.bidDescription = '';
+  currentStep.value = 0;
+  termsAccepted.value = false;
   uploadedFiles.value = [];
+  
+  Object.keys(companyDetails).forEach(key => {
+    companyDetails[key] = '';
+  });
+  
+  Object.keys(bidDetails).forEach(key => {
+    bidDetails[key] = '';
+  });
 };
 </script>
