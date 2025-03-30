@@ -1,22 +1,22 @@
 <template>
-  <div class="min-h-screen bg-gray-100 p-6">
+  <div class="min-h-screen bg-gray-100 p-2 sm:p-4 md:p-6">
     <div class="bg-white rounded-lg shadow-md">
       <!-- Header and Search/Filter Section -->
-      <div class="p-4 border-b flex justify-between items-center">
-        <h2 class="text-xl font-semibold text-gray-800">Contract Management</h2>
-        <div class="flex space-x-4 items-center">
+      <div class="p-3 sm:p-4 border-b flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-3 sm:space-y-0">
+        <h2 class="text-lg sm:text-xl font-semibold text-gray-800">Contract Management</h2>
+        <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 items-start sm:items-center w-full sm:w-auto">
           <!-- Search Input -->
           <input 
             v-model="searchQuery" 
             type="text" 
             placeholder="Search contracts..." 
-            class="border border-gray-300 rounded-md px-3 py-2 text-sm w-64"
+            class="border border-gray-300 rounded-md px-3 py-2 text-sm w-full sm:w-64"
           />
           
           <!-- Status Filter -->
           <select 
             v-model="statusFilter" 
-            class="border border-gray-300 rounded-md px-3 py-2 text-sm"
+            class="border border-gray-300 rounded-md px-3 py-2 text-sm w-full sm:w-auto mt-2 sm:mt-0"
           >
             <option value="">All Statuses</option>
             <option value="Active">Active</option>
@@ -26,24 +26,24 @@
           <!-- Add Contract Button -->
           <button 
             @click="openNewContractModal" 
-            class="bg-green-600 text-white px-4 py-2 rounded-md text-sm hover:bg-green-700 transition-colors"
+            class="bg-green-600 text-white px-4 py-2 rounded-md text-sm hover:bg-green-700 transition-colors w-full sm:w-auto mt-2 sm:mt-0"
           >
             + Add Contract
           </button>
         </div>
       </div>
 
-      <!-- Contracts Table -->
-      <div class="overflow-x-auto">
+      <!-- Contracts Table for Desktop/Tablet -->
+      <div class="hidden sm:block overflow-x-auto">
         <table class="w-full">
           <thead class="bg-gray-50 border-b">
             <tr>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contract ID</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contract Title</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Supplier</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Expiry Date</th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contract ID</th>
+              <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contract Title</th>
+              <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Supplier</th>
+              <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Expiry Date</th>
+              <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-200">
@@ -52,7 +52,7 @@
               :key="contract.id" 
               class="hover:bg-gray-50 transition-colors"
             >
-              <td class="px-4 py-3 whitespace-nowrap">
+              <td class="px-3 py-3 whitespace-nowrap">
                 <button 
                   @click="viewContractDetails(contract)"
                   class="text-blue-600 hover:underline hover:text-blue-800 font-medium text-left"
@@ -60,9 +60,9 @@
                   {{ contract.id }}
                 </button>
               </td>
-              <td class="px-4 py-3">{{ contract.title }}</td>
-              <td class="px-4 py-3">{{ contract.supplier }}</td>
-              <td class="px-4 py-3">
+              <td class="px-3 py-3">{{ contract.title }}</td>
+              <td class="px-3 py-3">{{ contract.supplier }}</td>
+              <td class="px-3 py-3">
                 <span 
                   :class="{
                     'bg-green-100 text-green-800': contract.status === 'Active',
@@ -73,19 +73,19 @@
                   {{ contract.status }}
                 </span>
               </td>
-              <td class="px-4 py-3">{{ contract.expiryDate }}</td>
-              <td class="px-4 py-3">
+              <td class="px-3 py-3">{{ contract.expiryDate }}</td>
+              <td class="px-3 py-3">
                 <button 
                   v-if="contract.status === 'Active'"
                   @click="openViewContractModal(contract)" 
-                  class="bg-blue-600 text-white px-3 py-1 rounded-md text-sm mr-2"
+                  class="bg-blue-600 text-white px-3 py-1 rounded-md text-xs sm:text-sm mr-2"
                 >
                   View
                 </button>
                 <button 
                   v-else-if="contract.status === 'Renewal'"
                   @click="openRenewContractModal(contract)" 
-                  class="bg-orange-500 text-white px-3 py-1 rounded-md text-sm"
+                  class="bg-orange-500 text-white px-3 py-1 rounded-md text-xs sm:text-sm"
                 >
                   Renew
                 </button>
@@ -99,6 +99,60 @@
           </tbody>
         </table>
       </div>
+
+      <!-- Mobile Card View -->
+      <div class="sm:hidden">
+        <div 
+          v-for="contract in filteredContracts" 
+          :key="contract.id"
+          class="border-b p-3"
+        >
+          <div class="flex justify-between items-center mb-2">
+            <button 
+              @click="viewContractDetails(contract)"
+              class="text-blue-600 hover:underline hover:text-blue-800 font-medium text-left"
+            >
+              {{ contract.id }}
+            </button>
+            <span 
+              :class="{
+                'bg-green-100 text-green-800': contract.status === 'Active',
+                'bg-yellow-100 text-yellow-800': contract.status === 'Renewal'
+              }" 
+              class="px-2 py-1 rounded-full text-xs"
+            >
+              {{ contract.status }}
+            </span>
+          </div>
+          
+          <div class="space-y-1 text-sm">
+            <div><span class="font-medium">Title:</span> {{ contract.title }}</div>
+            <div><span class="font-medium">Supplier:</span> {{ contract.supplier }}</div>
+            <div><span class="font-medium">Expiry:</span> {{ contract.expiryDate }}</div>
+          </div>
+          
+          <div class="mt-3">
+            <button 
+              v-if="contract.status === 'Active'"
+              @click="openViewContractModal(contract)" 
+              class="bg-blue-600 text-white px-3 py-1 rounded-md text-xs w-full"
+            >
+              View
+            </button>
+            <button 
+              v-else-if="contract.status === 'Renewal'"
+              @click="openRenewContractModal(contract)" 
+              class="bg-orange-500 text-white px-3 py-1 rounded-md text-xs w-full"
+            >
+              Renew
+            </button>
+          </div>
+        </div>
+        
+        <div v-if="filteredContracts.length === 0" class="text-center py-4 text-gray-500">
+          No contracts found
+        </div>
+      </div>
     </div>
 
     <!-- Contract Modal (Create/View/Renew) -->
@@ -111,7 +165,6 @@
     />
   </div>
 </template>
-
 <script>
 import { ref, reactive, computed } from 'vue';
 import ContractModal from '@/components/Buyer/ContractModal.vue';

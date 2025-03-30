@@ -53,7 +53,9 @@ const breadcrumbs = computed(() => {
 
 <style scoped>
 .breadcrumb-container {
-  padding: 0.5rem 0;
+  padding: 0.5rem 1rem;
+  width: 100%;
+  overflow-x: auto;
 }
 
 .breadcrumb-list {
@@ -62,11 +64,13 @@ const breadcrumbs = computed(() => {
   list-style: none;
   padding: 0;
   margin: 0;
+  min-width: min-content;
 }
 
 .breadcrumb-item {
   display: flex;
   align-items: center;
+  white-space: nowrap;
 }
 
 .breadcrumb-link {
@@ -75,6 +79,9 @@ const breadcrumbs = computed(() => {
   color: #3b82f6;
   cursor: pointer;
   text-decoration: none;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .breadcrumb-link:hover {
@@ -83,6 +90,9 @@ const breadcrumbs = computed(() => {
 
 .breadcrumb-text {
   color: #6b7280;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .breadcrumb-separator {
@@ -92,5 +102,36 @@ const breadcrumbs = computed(() => {
 
 .icon {
   margin-right: 0.25rem;
+  flex-shrink: 0;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .breadcrumb-container {
+    padding: 0.5rem 0.75rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .breadcrumb-container {
+    padding: 0.5rem 0.5rem;
+  }
+  
+  .breadcrumb-separator {
+    margin: 0 0.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .breadcrumb-container {
+    white-space: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+  
+  .breadcrumb-list {
+    flex-wrap: nowrap;
+  }
 }
 </style>

@@ -38,15 +38,14 @@ const closeLoginPanel = () => {
 </script>
 
 <template>
-  <div class="absolute inset-0 bg-gradient-to-br from-blue-300 via-blue-500 to-purple-600 min-h-screen w-full overflow-auto">
-    <div class="container mx-auto px-4 py-12 md:py-20">
+  <div class="absolute inset-0 bg-gradient-to-br from-blue-300 via-blue-500 to-purple-600">
+    <div class="md:py-20">
       <!-- Main content container -->
       <div class="flex flex-col items-center justify-center">
         <!-- Header -->
         <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2">
           Tender Supply Management
         </h1>
-        
         <!-- Logo and tagline section -->
         <div class="flex flex-col items-center mt-8 mb-12">
           <div class="flex items-center justify-center mb-6">

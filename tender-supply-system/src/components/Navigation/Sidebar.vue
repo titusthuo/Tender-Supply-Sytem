@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
 
@@ -11,6 +11,7 @@ const props = defineProps({
 })
 
 const collapsed = ref(props.initialCollapsed)
+const mobileOpen = ref(false)
 
 const router = useRouter()
 const route = useRoute()
@@ -125,16 +126,41 @@ watch(
 
 function handleMenuSelection(key) {
   router.push({ name: key })
+  // Close mobile menu when an item is selected
+  if (window.innerWidth < 768) {
+    mobileOpen.value = false
+  }
 }
 
-// Toggle sidebar collapse
+// Toggle sidebar collapse for desktop
 function toggleSidebar() {
   collapsed.value = !collapsed.value
 }
 
+// Toggle mobile menu
+function toggleMobileMenu() {
+  mobileOpen.value = !mobileOpen.value
+}
+
+// Close mobile menu on window resize if it becomes desktop
+function handleResize() {
+  if (window.innerWidth >= 768 && mobileOpen.value) {
+    mobileOpen.value = false
+  }
+}
+
+// Add resize event listener
+if (typeof window !== 'undefined') {
+  window.addEventListener('resize', handleResize)
+  // Clean up function
+  onUnmounted(() => {
+    window.removeEventListener('resize', handleResize)
+  })
+}
+
 // Computed property to track expanded sections
 const expandedSections = computed(() => {
-  if (collapsed.value) {
+  if (collapsed.value && !mobileOpen.value) {
     return [currentKey.value]
   }
   return menuItems.map(item => item.key)
@@ -142,26 +168,46 @@ const expandedSections = computed(() => {
 </script>
 
 <template>
+  <!-- Mobile Menu Toggle Button - Fixed to the top -->
+  <button 
+    @click="toggleMobileMenu"
+    class="md:hidden fixed top-4 left-4 z-50 bg-gray-200 p-2 rounded-lg shadow-md"
+  >
+    <Icon 
+      :icon="mobileOpen ? 'ph:x-bold' : 'ph:list-bold'" 
+      class="w-6 h-6 text-gray-600"
+    />
+  </button>
+  
+  <!-- Overlay for mobile menu -->
+  <div 
+    v-if="mobileOpen" 
+    @click="mobileOpen = false"
+    class="md:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+  ></div>
+  
   <div 
     class="fixed top-0 left-0 bottom-0 z-50 transition-all duration-300 ease-in-out"
     :class="{
-      'w-64': !collapsed,
-      'w-20': collapsed
+      'w-64 md:w-64': !collapsed && !mobileOpen,
+      'w-20 md:w-20': collapsed && !mobileOpen,
+      'w-64': mobileOpen,
+      '-translate-x-full md:translate-x-0': !mobileOpen,
+      'translate-x-0': mobileOpen
     }"
   >
     <div 
       class="flex flex-col h-full bg-gray-100 border-r border-gray-200 
              shadow-lg transform transition-transform duration-300 ease-in-out"
       :class="{
-        '-translate-x-full': false,  // Always visible
-        'w-64': !collapsed,
-        'w-20': collapsed
+        'w-64': !collapsed || mobileOpen,
+        'w-20': collapsed && !mobileOpen
       }"
     >
-      <!-- Toggle Button -->
+      <!-- Toggle Button - Hidden on mobile -->
       <button 
         @click="toggleSidebar"
-        class="absolute top-4 right-0 translate-x-full bg-gray-200 
+        class="hidden md:block absolute top-4 right-0 translate-x-full bg-gray-200 
                p-2 rounded-r-lg shadow-md z-50 transition-all duration-300"
       >
         <Icon 
@@ -175,7 +221,7 @@ const expandedSections = computed(() => {
         <div 
           class="text-xl font-bold text-gray-800"
         >
-          {{ collapsed ? 'YL' : 'Your Logo' }}
+          {{ (collapsed && !mobileOpen) ? 'YL' : 'Your Logo' }}
         </div>
       </div>
 
@@ -203,7 +249,7 @@ const expandedSections = computed(() => {
                   class="w-5 h-5 mr-3 text-gray-600"
                 />
                 <span 
-                  v-if="!collapsed" 
+                  v-if="!collapsed || mobileOpen" 
                   class="flex-grow text-sm font-medium text-gray-800"
                 >
                   {{ item.label }}
@@ -213,7 +259,7 @@ const expandedSections = computed(() => {
               <!-- Submenu -->
               <ul 
                 v-if="item.children && 
-                       (!collapsed || currentKey === item.key)"
+                       (!collapsed || mobileOpen || currentKey === item.key)"
                 class="mt-1 space-y-1"
               >
                 <li 
@@ -235,7 +281,7 @@ const expandedSections = computed(() => {
                       class="w-4 h-4 mr-3 text-gray-600"
                     />
                     <span 
-                      v-if="!collapsed" 
+                      v-if="!collapsed || mobileOpen" 
                       class="text-sm text-gray-700"
                     >
                       {{ child.label }}
@@ -262,7 +308,7 @@ const expandedSections = computed(() => {
             class="w-6 h-6 text-gray-600" 
           />
         </div>
-        <div v-if="!collapsed" class="flex-grow">
+        <div v-if="!collapsed || mobileOpen" class="flex-grow">
           <p class="text-sm font-medium text-gray-800">
             User Name
           </p>

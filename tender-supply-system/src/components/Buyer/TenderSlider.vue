@@ -1,26 +1,25 @@
-<!-- TenderSlider.vue -->
 <template>
   <div 
     v-if="isOpen"
-    class="fixed inset-y-0 right-0 w-[500px] bg-white shadow-lg transform transition-transform duration-300 ease-in-out"
+    class="fixed inset-y-0 right-0 w-full sm:w-[80%] md:w-[60%] lg:w-[500px] bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-50"
     :class="isOpen ? 'translate-x-0' : 'translate-x-full'"
   >
     <div class="h-full flex flex-col">
       <!-- Slider Header -->
-      <div class="p-6 border-b flex justify-between items-center">
-        <h2 class="text-xl font-bold">
+      <div class="p-4 sm:p-6 border-b flex justify-between items-center">
+        <h2 class="text-lg sm:text-xl font-bold">
           {{ localTender.id ? 'Edit' : 'Create' }} Tender
         </h2>
         <button 
           @click="$emit('close')" 
-          class="text-gray-600 hover:text-gray-900"
+          class="text-gray-600 hover:text-gray-900 p-2"
         >
           ✕
         </button>
       </div>
 
       <!-- Slider Content -->
-      <div class="p-6 flex-grow overflow-y-auto">
+      <div class="p-4 sm:p-6 flex-grow overflow-y-auto">
         <form @submit.prevent="saveChanges">
           <div class="mb-4">
             <label class="block text-gray-700 mb-2">Tender ID</label>
@@ -103,17 +102,17 @@
             </select>
           </div>
 
-          <div className="mt-6 flex justify-end space-x-3">
+          <div class="mt-6 flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-3">
             <button 
               type="button" 
               @click="$emit('close')" 
-              class="border px-4 py-2 rounded hover:bg-gray-100 transition-colors"
+              class="border px-4 py-2 rounded hover:bg-gray-100 transition-colors w-full sm:w-auto"
             >
               Cancel
             </button>
             <button 
               type="submit" 
-              class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+              class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors w-full sm:w-auto"
             >
               {{ localTender.id ? 'Update Tender' : 'Create Tender' }}
             </button>
@@ -123,7 +122,6 @@
     </div>
   </div>
 </template>
-
 <script setup>
 import { ref, watch } from 'vue'
 

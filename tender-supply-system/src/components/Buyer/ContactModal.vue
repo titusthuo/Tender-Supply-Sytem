@@ -1,103 +1,103 @@
 <template>
-    <div>
-      <!-- Modal Backdrop -->
-      <transition name="fade">
-        <div 
-          v-if="isOpen" 
-          class="fixed inset-0 bg-white bg-opacity-50 z-40"
-          @click="$emit('close')"
-        ></div>
-      </transition>
-      
-      <!-- Modal Panel -->
-      <transition name="modal">
-        <div 
-          v-if="isOpen"
-          class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl z-50 w-full max-w-md"
-        >
-          <!-- Header -->
-          <div class="p-4 border-b">
-            <div class="flex justify-between items-center">
-              <h2 class="text-xl font-bold">Contact Supplier</h2>
-              <button 
-                class="text-gray-500 hover:text-gray-700 focus:outline-none"
-                @click="$emit('close')"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <p class="text-gray-600 mt-1" v-if="supplier">
-              You are about to contact {{ supplier.name }}
-            </p>
+  <div>
+    <!-- Modal Backdrop -->
+    <transition name="fade">
+      <div 
+        v-if="isOpen" 
+        class="fixed inset-0 bg-white bg-opacity-50 z-40"
+        @click="$emit('close')"
+      ></div>
+    </transition>
+    
+    <!-- Modal Panel -->
+    <transition name="modal">
+      <div 
+        v-if="isOpen"
+        class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl z-50 w-11/12 max-w-md mx-auto overflow-y-auto max-h-90vh"
+      >
+        <!-- Header -->
+        <div class="p-3 sm:p-4 border-b">
+          <div class="flex justify-between items-center">
+            <h2 class="text-lg sm:text-xl font-bold">Contact Supplier</h2>
+            <button 
+              class="text-gray-500 hover:text-gray-700 focus:outline-none"
+              @click="$emit('close')"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </div>
-          
-          <!-- Content -->
-          <form @submit.prevent="handleSubmit" class="p-4">
-            <div class="space-y-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Your Email *
-                </label>
-                <input 
-                  type="email" 
-                  v-model="email" 
-                  class="w-full p-2 border border-gray-300 rounded-md" 
-                  required
-                  placeholder="your.email@company.com"
-                />
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Subject *
-                </label>
-                <input 
-                  type="text" 
-                  v-model="subject" 
-                  class="w-full p-2 border border-gray-300 rounded-md" 
-                  required
-                  placeholder="Request for information"
-                />
-              </div>
-              
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">
-                  Message *
-                </label>
-                <textarea 
-                  v-model="message" 
-                  class="w-full p-2 border border-gray-300 rounded-md" 
-                  required
-                  rows="4"
-                  placeholder="Enter your message here..."
-                ></textarea>
-              </div>
+          <p class="text-sm sm:text-base text-gray-600 mt-1" v-if="supplier">
+            You are about to contact {{ supplier.name }}
+          </p>
+        </div>
+        
+        <!-- Content -->
+        <form @submit.prevent="handleSubmit" class="p-3 sm:p-4">
+          <div class="space-y-3 sm:space-y-4">
+            <div>
+              <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                Your Email *
+              </label>
+              <input 
+                type="email" 
+                v-model="email" 
+                class="w-full p-2 border border-gray-300 rounded-md text-sm sm:text-base" 
+                required
+                placeholder="your.email@company.com"
+              />
             </div>
             
-            <!-- Footer -->
-            <div class="mt-6 flex justify-end space-x-3">
-              <button 
-                type="button" 
-                class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50"
-                @click="$emit('close')"
-              >
-                Cancel
-              </button>
-              <button 
-                type="submit" 
-                class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-              >
-                Send Message
-              </button>
+            <div>
+              <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                Subject *
+              </label>
+              <input 
+                type="text" 
+                v-model="subject" 
+                class="w-full p-2 border border-gray-300 rounded-md text-sm sm:text-base" 
+                required
+                placeholder="Request for information"
+              />
             </div>
-          </form>
-        </div>
-      </transition>
-    </div>
-  </template>
-  
+            
+            <div>
+              <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                Message *
+              </label>
+              <textarea 
+                v-model="message" 
+                class="w-full p-2 border border-gray-300 rounded-md text-sm sm:text-base" 
+                required
+                rows="3"
+                sm:rows="4"
+                placeholder="Enter your message here..."
+              ></textarea>
+            </div>
+          </div>
+          
+          <!-- Footer -->
+          <div class="mt-4 sm:mt-6 flex justify-end space-x-2 sm:space-x-3">
+            <button 
+              type="button" 
+              class="px-3 py-1.5 sm:px-4 sm:py-2 border border-gray-300 rounded-md text-xs sm:text-sm text-gray-700 bg-white hover:bg-gray-50"
+              @click="$emit('close')"
+            >
+              Cancel
+            </button>
+            <button 
+              type="submit" 
+              class="px-3 py-1.5 sm:px-4 sm:py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-xs sm:text-sm"
+            >
+              Send Message
+            </button>
+          </div>
+        </form>
+      </div>
+    </transition>
+  </div>
+</template>
   <style scoped>
   /* Fade effect for backdrop */
   .fade-enter-active, .fade-leave-active {

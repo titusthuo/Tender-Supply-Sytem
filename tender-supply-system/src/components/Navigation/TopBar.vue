@@ -45,16 +45,20 @@ import { ref } from 'vue'
   align-items: center;
   padding: 1rem 0;
   border-bottom: 1px solid #e5e7eb;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .topbar-left {
   flex: 1;
+  min-width: 150px;
 }
 
 .topbar-right {
   display: flex;
   align-items: center;
   gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .search-container {
@@ -66,12 +70,14 @@ import { ref } from 'vue'
   border-radius: 4px;
   border: 1px solid #e5e7eb;
   width: 200px;
+  max-width: 100%;
 }
 
 .actions-container {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  flex-wrap: nowrap;
 }
 
 .action-button {
@@ -144,5 +150,47 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .topbar {
+    padding: 1rem;
+  }
+  
+  .topbar-left, .topbar-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 576px) {
+  .search-input {
+    width: 150px;
+  }
+  
+  .actions-container {
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .topbar-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .search-container {
+    width: 100%;
+  }
+  
+  .search-input {
+    width: 100%;
+  }
 }
 </style>

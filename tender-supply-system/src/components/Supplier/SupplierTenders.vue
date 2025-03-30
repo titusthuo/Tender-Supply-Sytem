@@ -1,27 +1,27 @@
 <template>
   <div class="min-h-screen bg-gray-50">
     <!-- Header -->
-    <header class="bg-[#2c3e50] text-white px-6 py-4 flex justify-between items-center">
-      <h1 class="text-2xl font-bold">Procurement Portal</h1>
-      <div class="flex space-x-4">
-        <button class="bg-[#3498db] px-4 py-2 rounded">Profile</button>
-        <button class="border border-white px-4 py-2 rounded">Logout</button>
+    <header class="bg-[#2c3e50] text-white px-4 sm:px-6 py-4 flex flex-col sm:flex-row justify-between items-center">
+      <h1 class="text-xl sm:text-2xl font-bold mb-3 sm:mb-0">Procurement Portal</h1>
+      <div class="flex space-x-2 sm:space-x-4 w-full sm:w-auto justify-center sm:justify-end">
+        <button class="bg-[#3498db] px-3 sm:px-4 py-2 rounded text-sm sm:text-base">Profile</button>
+        <button class="border border-white px-3 sm:px-4 py-2 rounded text-sm sm:text-base">Logout</button>
       </div>
     </header>
 
     <!-- Main Content -->
-    <div class="container mx-auto px-4 py-8">
-      <h2 class="text-3xl font-bold text-[#2c3e50] mb-6">Open Tenders</h2>
+    <div class="container mx-auto px-3 sm:px-4 py-4 sm:py-8">
+      <h2 class="text-2xl sm:text-3xl font-bold text-[#2c3e50] mb-4 sm:mb-6 text-center sm:text-left">Open Tenders</h2>
 
       <!-- Filter Section -->
-      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-        <div class="grid md:grid-cols-3 gap-4">
+      <div class="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-4 sm:mb-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
           <!-- Category Filter -->
           <div class="relative">
             <select 
               v-model="selectedCategory" 
               @change="applyFilters"
-              class="w-full px-4 py-2 border rounded-md appearance-none"
+              class="w-full px-3 sm:px-4 py-2 border rounded-md appearance-none text-sm sm:text-base"
             >
               <option value="">All Categories</option>
               <option 
@@ -33,7 +33,7 @@
               </option>
             </select>
             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-              <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+              <svg class="fill-current h-3 w-3 sm:h-4 sm:w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                 <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
               </svg>
             </div>
@@ -44,14 +44,14 @@
             <select 
               v-model="selectedStatus" 
               @change="applyFilters"
-              class="w-full px-4 py-2 border rounded-md appearance-none"
+              class="w-full px-3 sm:px-4 py-2 border rounded-md appearance-none text-sm sm:text-base"
             >
               <option value="">All Statuses</option>
               <option value="open">Open</option>
               <option value="closed">Closed</option>
             </select>
             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-              <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+              <svg class="fill-current h-3 w-3 sm:h-4 sm:w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                 <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
               </svg>
             </div>
@@ -64,9 +64,9 @@
               v-model="searchQuery"
               @input="applyFilters"
               placeholder="Search tenders..." 
-              class="w-full px-4 py-2 border rounded-md pl-10"
+              class="w-full px-3 sm:px-4 py-2 border rounded-md pl-8 sm:pl-10 text-sm sm:text-base"
             />
-            <svg class="absolute left-3 top-3 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="absolute left-2 sm:left-3 top-2 sm:top-3 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </div>
@@ -74,32 +74,32 @@
       </div>
 
       <!-- Tenders Grid -->
-      <div class="grid md:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
         <div 
           v-for="tender in filteredTenders" 
           :key="tender.id" 
-          class="bg-white rounded-lg shadow-md p-6 hover:shadow-xl transition-shadow"
+          class="bg-white rounded-lg shadow-md p-4 sm:p-6 hover:shadow-xl transition-shadow"
         >
-          <h3 class="text-xl font-bold text-[#2c3e50] mb-2">
+          <h3 class="text-lg sm:text-xl font-bold text-[#2c3e50] mb-2 line-clamp-2">
             {{ tender.title }}
           </h3>
-          <p class="text-gray-600 mb-4">{{ tender.description }}</p>
+          <p class="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4 line-clamp-3">{{ tender.description }}</p>
           
-          <div class="flex justify-between items-center mb-4">
-            <div class="flex space-x-2">
+          <div class="flex flex-wrap justify-between items-center mb-3 sm:mb-4 gap-2">
+            <div class="flex flex-wrap gap-1 sm:gap-2">
               <span 
-                class="px-2 py-1 bg-[#ecf0f1] text-xs rounded-full"
+                class="px-2 py-1 bg-[#ecf0f1] text-xs rounded-full truncate max-w-[120px]"
               >
                 {{ tender.department }}
               </span>
               <span 
-                class="px-2 py-1 bg-[#ecf0f1] text-xs rounded-full"
+                class="px-2 py-1 bg-[#ecf0f1] text-xs rounded-full truncate max-w-[120px]"
               >
                 {{ tender.category }}
               </span>
             </div>
             <span 
-              class="text-sm text-red-500 font-semibold"
+              class="text-xs sm:text-sm text-red-500 font-semibold"
             >
               {{ calculateDeadline(tender.deadline) }}
             </span>
@@ -107,7 +107,7 @@
 
           <button 
             @click="viewTenderDetails(tender)"
-            class="w-full bg-[#3498db] text-white py-2 rounded hover:bg-blue-600 transition-colors"
+            class="w-full bg-[#3498db] text-white py-1.5 sm:py-2 rounded hover:bg-blue-600 transition-colors text-sm sm:text-base"
           >
             Apply Tender
           </button>
@@ -116,7 +116,6 @@
     </div>
   </div>
 </template>
-
 <script>
 export default {
   data() {

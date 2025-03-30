@@ -1,183 +1,222 @@
 <!-- src/components/Bidding/BidHistoryArchive.vue -->
 <template>
-    <div class="min-h-screen flex flex-col bg-white">
-      <!-- Header -->
-      <div class="bg-blue-600 text-white p-4 shadow-md">
-        <div class="container mx-auto">
-          <h1 class="text-2xl font-bold">Bidding System Dashboard</h1>
-        </div>
+  <div class="min-h-screen flex flex-col bg-white">
+    <!-- Header -->
+    <div class="bg-blue-600 text-white p-4 shadow-md">
+      <div class="container mx-auto px-4">
+        <h1 class="text-xl sm:text-2xl font-bold">Bidding System Dashboard</h1>
       </div>
-  
-      <!-- Horizontal Navigation Menu -->
-      <div class="bg-white border-b border-gray-200 shadow-sm">
-        <div class="container mx-auto py-4 px-6">
-          <div class="flex space-x-8 items-center">
-            <div class="flex items-center text-gray-600 cursor-pointer hover:text-blue-600 transition-colors">
-              
-              <button @click="$emit('view-change', 'submission')" class="hover:underline">Bid Submission</button>
-            </div>
-            <div class="flex items-center text-gray-600 cursor-pointer hover:text-blue-600 transition-colors">
-              
-              <button @click="$emit('view-change', 'tracking')" class="hover:underline">Status Tracking</button>
-            </div>
-            <div class="flex items-center text-blue-600 font-medium cursor-pointer">
-             
-              <button @click="$emit('view-change', 'history')" class="hover:underline">Bid History</button>
-            </div>
+    </div>
+
+    <!-- Horizontal Navigation Menu -->
+    <div class="bg-white border-b border-gray-200 shadow-sm overflow-x-auto">
+      <div class="container mx-auto py-3 sm:py-4 px-4 sm:px-6">
+        <div class="flex space-x-4 sm:space-x-8 items-center min-w-max">
+          <div class="flex items-center text-gray-600 cursor-pointer hover:text-blue-600 transition-colors">
+            <button @click="$emit('view-change', 'submission')" class="text-sm sm:text-base hover:underline whitespace-nowrap">Bid Submission</button>
+          </div>
+          <div class="flex items-center text-gray-600 cursor-pointer hover:text-blue-600 transition-colors">
+            <button @click="$emit('view-change', 'tracking')" class="text-sm sm:text-base hover:underline whitespace-nowrap">Status Tracking</button>
+          </div>
+          <div class="flex items-center text-blue-600 font-medium cursor-pointer">
+            <button @click="$emit('view-change', 'history')" class="text-sm sm:text-base hover:underline whitespace-nowrap">Bid History</button>
           </div>
         </div>
       </div>
-  
-      <!-- Bid History & Archive Content -->
-      <div class="flex-1 bg-gray-50">
-        <div class="container mx-auto p-6">
-          <h2 class="text-xl font-semibold mb-6 text-gray-800">Bid History & Archive</h2>
+    </div>
+
+    <!-- Bid History & Archive Content -->
+    <div class="flex-1 bg-gray-50">
+      <div class="container mx-auto p-3 sm:p-6">
+        <h2 class="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 text-gray-800 px-1">Bid History & Archive</h2>
+        
+        <div class="bg-white rounded-lg shadow-sm">
+          <div class="p-3 sm:p-4 border-b border-gray-200">
+            <div class="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-4">
+              <div class="w-full sm:flex-grow">
+                <input 
+                  v-model="searchTerm"
+                  class="w-full p-2 sm:p-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                  placeholder="Search by project name, ID, or status..."
+                />
+              </div>
+              <div class="flex gap-2 w-full sm:w-auto">
+                <button 
+                  @click="sortBids"
+                  class="flex-1 sm:flex-none bg-blue-600 text-white px-3 sm:px-4 py-2 rounded-md hover:bg-blue-700 transition-colors duration-200 text-sm"
+                >
+                  <span class="flex items-center justify-center">
+                    Sort
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+                    </svg>
+                  </span>
+                </button>
+                <button 
+                  @click="filterBids"
+                  class="flex-1 sm:flex-none bg-blue-600 text-white px-3 sm:px-4 py-2 rounded-md hover:bg-blue-700 transition-colors duration-200 text-sm"
+                >
+                  <span class="flex items-center justify-center">
+                    Filter
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                    </svg>
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
           
-          <div class="bg-white rounded-lg shadow-sm">
-            <div class="p-4 border-b border-gray-200">
-              <div class="flex flex-wrap gap-4">
-                <div class="flex-grow">
-                  <input 
-                    v-model="searchTerm"
-                    class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Search by project name, ID, or status..."
-                  />
+          <!-- Table for larger screens -->
+          <div class="hidden sm:block overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead>
+                <tr>
+                  <th class="px-4 sm:px-6 py-3 sm:py-4 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
+                    Project Name
+                  </th>
+                  <th class="px-4 sm:px-6 py-3 sm:py-4 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
+                    Bid Amount
+                  </th>
+                  <th class="px-4 sm:px-6 py-3 sm:py-4 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
+                    Submission Date
+                  </th>
+                  <th class="px-4 sm:px-6 py-3 sm:py-4 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
+                    Status
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <tr v-for="bid in displayedBids" :key="bid.id" class="hover:bg-gray-50 transition-colors duration-150">
+                  <td class="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+                    <div class="font-medium text-gray-800 text-sm">{{ bid.projectName }}</div>
+                    <div class="text-xs text-gray-500">ID: {{ bid.id }}</div>
+                  </td>
+                  <td class="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-gray-700 text-sm">
+                    ${{ bid.bidAmount.toLocaleString() }}
+                  </td>
+                  <td class="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-gray-700 text-sm">
+                    {{ bid.submissionDate }}
+                  </td>
+                  <td class="px-4 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+                    <span 
+                      class="px-2 sm:px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full"
+                      :class="{
+                        'bg-yellow-100 text-yellow-800': bid.status === 'Under Review',
+                        'bg-green-100 text-green-800': bid.status === 'Accepted',
+                        'bg-red-100 text-red-800': bid.status === 'Rejected'
+                      }"
+                    >
+                      {{ bid.status }}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <!-- Card view for mobile screens -->
+          <div class="sm:hidden divide-y divide-gray-200">
+            <div 
+              v-for="bid in displayedBids" 
+              :key="bid.id" 
+              class="p-4 hover:bg-gray-50 transition-colors duration-150"
+            >
+              <div class="flex justify-between items-start mb-2">
+                <div>
+                  <div class="font-medium text-gray-800">{{ bid.projectName }}</div>
+                  <div class="text-xs text-gray-500">ID: {{ bid.id }}</div>
                 </div>
-                <div class="flex gap-2">
-                  <button 
-                    @click="sortBids"
-                    class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors duration-200"
-                  >
-                    <span class="flex items-center">
-                      Sort
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
-                      </svg>
-                    </span>
-                  </button>
-                  <button 
-                    @click="filterBids"
-                    class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors duration-200"
-                  >
-                    <span class="flex items-center">
-                      Filter
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                      </svg>
-                    </span>
-                  </button>
+                <span 
+                  class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full"
+                  :class="{
+                    'bg-yellow-100 text-yellow-800': bid.status === 'Under Review',
+                    'bg-green-100 text-green-800': bid.status === 'Accepted',
+                    'bg-red-100 text-red-800': bid.status === 'Rejected'
+                  }"
+                >
+                  {{ bid.status }}
+                </span>
+              </div>
+              <div class="grid grid-cols-2 gap-2 text-sm">
+                <div>
+                  <div class="text-xs text-gray-500">Bid Amount</div>
+                  <div class="text-gray-700">${{ bid.bidAmount.toLocaleString() }}</div>
+                </div>
+                <div>
+                  <div class="text-xs text-gray-500">Submission Date</div>
+                  <div class="text-gray-700">{{ bid.submissionDate }}</div>
                 </div>
               </div>
             </div>
-            
-            <div class="overflow-x-auto">
-              <table class="min-w-full divide-y divide-gray-200">
-                <thead>
-                  <tr>
-                    <th class="px-6 py-4 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
-                      Project Name
-                    </th>
-                    <th class="px-6 py-4 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
-                      Bid Amount
-                    </th>
-                    <th class="px-6 py-4 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
-                      Submission Date
-                    </th>
-                    <th class="px-6 py-4 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b">
-                      Status
-                    </th>
-                  </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                  <tr v-for="bid in displayedBids" :key="bid.id" class="hover:bg-gray-50 transition-colors duration-150">
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="font-medium text-gray-800">{{ bid.projectName }}</div>
-                      <div class="text-xs text-gray-500">ID: {{ bid.id }}</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-gray-700">
-                      ${{ bid.bidAmount.toLocaleString() }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-gray-700">
-                      {{ bid.submissionDate }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <span 
-                        class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full"
-                        :class="{
-                          'bg-yellow-100 text-yellow-800': bid.status === 'Under Review',
-                          'bg-green-100 text-green-800': bid.status === 'Accepted',
-                          'bg-red-100 text-red-800': bid.status === 'Rejected'
-                        }"
-                      >
-                        {{ bid.status }}
-                      </span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+          </div>
+          
+          <!-- Pagination -->
+          <div class="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 bg-white border-t border-gray-200">
+            <!-- Mobile pagination -->
+            <div class="flex w-full justify-between sm:hidden">
+              <button 
+                @click="currentPage--" 
+                :disabled="currentPage === 1"
+                class="inline-flex items-center px-3 py-1 border border-gray-300 text-sm font-medium rounded-md bg-white text-gray-700 hover:bg-gray-50"
+                :class="currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''"
+              >
+                Previous
+              </button>
+              <span class="text-sm text-gray-700">
+                Page {{ currentPage }} of {{ totalPages }}
+              </span>
+              <button 
+                @click="currentPage++" 
+                :disabled="currentPage >= totalPages"
+                class="inline-flex items-center px-3 py-1 border border-gray-300 text-sm font-medium rounded-md bg-white text-gray-700 hover:bg-gray-50"
+                :class="currentPage >= totalPages ? 'opacity-50 cursor-not-allowed' : ''"
+              >
+                Next
+              </button>
             </div>
             
-            <!-- Pagination -->
-            <div class="flex items-center justify-between px-6 py-4 bg-white border-t border-gray-200">
-              <div class="flex-1 flex justify-between sm:hidden">
-                <button 
-                  @click="currentPage--" 
-                  :disabled="currentPage === 1"
-                  class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md bg-white text-gray-700 hover:bg-gray-50"
-                  :class="currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''"
-                >
-                  Previous
-                </button>
-                <button 
-                  @click="currentPage++" 
-                  :disabled="currentPage >= totalPages"
-                  class="ml-3 inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md bg-white text-gray-700 hover:bg-gray-50"
-                  :class="currentPage >= totalPages ? 'opacity-50 cursor-not-allowed' : ''"
-                >
-                  Next
-                </button>
+            <!-- Desktop pagination -->
+            <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+              <div>
+                <p class="text-sm text-gray-700">
+                  Showing <span class="font-medium">{{ startItem }}</span> to 
+                  <span class="font-medium">{{ endItem }}</span> of 
+                  <span class="font-medium">{{ filteredBids.length }}</span> results
+                </p>
               </div>
-              <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-                <div>
-                  <p class="text-sm text-gray-700">
-                    Showing <span class="font-medium">{{ startItem }}</span> to 
-                    <span class="font-medium">{{ endItem }}</span> of 
-                    <span class="font-medium">{{ filteredBids.length }}</span> results
-                  </p>
-                </div>
-                <div>
-                  <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                    <button 
-                      @click="currentPage--" 
-                      :disabled="currentPage === 1"
-                      class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-                      :class="currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''"
-                    >
-                      <span class="sr-only">Previous</span>
-                      &laquo;
-                    </button>
-                    <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-blue-50 text-sm font-medium text-blue-600">
-                      {{ currentPage }}
-                    </span>
-                    <button 
-                      @click="currentPage++" 
-                      :disabled="currentPage >= totalPages"
-                      class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-                      :class="currentPage >= totalPages ? 'opacity-50 cursor-not-allowed' : ''"
-                    >
-                      <span class="sr-only">Next</span>
-                      &raquo;
-                    </button>
-                  </nav>
-                </div>
+              <div>
+                <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                  <button 
+                    @click="currentPage--" 
+                    :disabled="currentPage === 1"
+                    class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                    :class="currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''"
+                  >
+                    <span class="sr-only">Previous</span>
+                    &laquo;
+                  </button>
+                  <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-blue-50 text-sm font-medium text-blue-600">
+                    {{ currentPage }}
+                  </span>
+                  <button 
+                    @click="currentPage++" 
+                    :disabled="currentPage >= totalPages"
+                    class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                    :class="currentPage >= totalPages ? 'opacity-50 cursor-not-allowed' : ''"
+                  >
+                    <span class="sr-only">Next</span>
+                    &raquo;
+                  </button>
+                </nav>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </template>
-  
+  </div>
+</template>
   <script setup>
   import { ref, computed, defineProps, defineEmits, watch } from 'vue';
   

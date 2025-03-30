@@ -1,142 +1,145 @@
 <template>
-    <div class="min-h-screen bg-gray-50 p-6">
-      <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
-        <!-- Header with Back Button and Actions -->
-        <div class="bg-gray-100 px-6 py-4 flex justify-between items-center border-b">
+  <div class="min-h-screen bg-gray-50 p-3 sm:p-6">
+    <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
+      <!-- Header with Back Button and Actions -->
+      <div class="bg-gray-100 px-3 sm:px-6 py-3 sm:py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center border-b space-y-2 sm:space-y-0">
+        <button 
+          @click="goBack" 
+          class="flex items-center text-gray-600 hover:text-gray-800 transition text-sm sm:text-base"
+        >
+          <svg class="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+          </svg>
+          Back to Suppliers
+        </button>
+        <div class="flex space-x-2 sm:space-x-3 w-full sm:w-auto justify-end">
           <button 
-            @click="goBack" 
-            class="flex items-center text-gray-600 hover:text-gray-800 transition"
+            @click="openEditSlider" 
+            class="text-blue-600 hover:text-blue-800 flex items-center text-sm sm:text-base"
           >
-            <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            <svg class="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
             </svg>
-            Back to Suppliers
+            <span class="hidden xs:inline">Edit Supplier</span>
+            <span class="xs:hidden">Edit</span>
           </button>
-          <div class="flex space-x-3">
-            <button 
-              @click="openEditSlider" 
-              class="text-blue-600 hover:text-blue-800 flex items-center"
-            >
-              <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-              </svg>
-              Edit Supplier
-            </button>
-            <button 
-              @click="toggleSupplierStatus" 
+          <button 
+            @click="toggleSupplierStatus" 
+            :class="{
+              'text-green-600 hover:text-green-800': supplier.status === 'Suspended',
+              'text-red-600 hover:text-red-800': supplier.status === 'Active'
+            }"
+            class="flex items-center text-sm sm:text-base"
+          >
+            <svg class="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path>
+            </svg>
+            <span class="hidden xs:inline">{{ supplier.status === 'Active' ? 'Suspend' : 'Activate' }}</span>
+            <span class="xs:hidden">{{ supplier.status === 'Active' ? 'Susp.' : 'Act.' }}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Supplier Profile Section -->
+      <div class="p-3 sm:p-6 grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+        <!-- Supplier Logo and Basic Info -->
+        <div class="md:col-span-1 flex flex-col items-center">
+          <img 
+            :src="supplier.logo" 
+            alt="Supplier Logo" 
+            class="w-32 h-32 sm:w-48 sm:h-48 object-cover rounded-lg shadow-md mb-3 sm:mb-4"
+          >
+          <h1 class="text-xl sm:text-2xl font-bold text-gray-800 mb-2 text-center">
+            {{ supplier.companyName }}
+          </h1>
+          <div class="flex items-center space-x-2 mb-3 sm:mb-4">
+            <span 
               :class="{
-                'text-green-600 hover:text-green-800': supplier.status === 'Suspended',
-                'text-red-600 hover:text-red-800': supplier.status === 'Active'
+                'bg-green-100 text-green-800': supplier.status === 'Active',
+                'bg-yellow-100 text-yellow-800': supplier.status === 'Pending',
+                'bg-red-100 text-red-800': supplier.status === 'Suspended'
               }"
-              class="flex items-center"
+              class="px-2 py-1 rounded-full text-xs font-medium"
             >
-              <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path>
-              </svg>
-              {{ supplier.status === 'Active' ? 'Suspend' : 'Activate' }}
-            </button>
-          </div>
-        </div>
-  
-        <!-- Supplier Profile Section -->
-        <div class="p-6 grid md:grid-cols-3 gap-6">
-          <!-- Supplier Logo and Basic Info -->
-          <div class="md:col-span-1 flex flex-col items-center">
-            <img 
-              :src="supplier.logo" 
-              alt="Supplier Logo" 
-              class="w-48 h-48 object-cover rounded-lg shadow-md mb-4"
-            >
-            <h1 class="text-2xl font-bold text-gray-800 mb-2">
-              {{ supplier.companyName }}
-            </h1>
-            <div class="flex items-center space-x-2 mb-4">
-              <span 
-                :class="{
-                  'bg-green-100 text-green-800': supplier.status === 'Active',
-                  'bg-yellow-100 text-yellow-800': supplier.status === 'Pending',
-                  'bg-red-100 text-red-800': supplier.status === 'Suspended'
-                }"
-                class="px-2 py-1 rounded-full text-xs font-medium"
-              >
-                {{ supplier.status }}
-              </span>
-              <div class="flex">
-                <template v-for="n in 5" :key="n">
-                  <svg 
-                    :class="n <= supplier.performanceRating ? 'text-yellow-400' : 'text-gray-300'"
-                    class="h-5 w-5"
-                    fill="currentColor" 
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                  </svg>
-                </template>
-              </div>
-            </div>
-          </div>
-  
-          <!-- Supplier Details -->
-          <div class="md:col-span-2 grid md:grid-cols-2 gap-4">
-            <div class="bg-gray-50 p-4 rounded-lg">
-              <h2 class="text-sm font-semibold text-gray-600 mb-2">Company Information</h2>
-              <div class="space-y-2">
-                <p class="flex items-center">
-                  <svg class="h-5 w-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                  </svg>
-                  Registration Number: {{ supplier.registrationNumber }}
-                </p>
-                <p class="flex items-center">
-                  <svg class="h-5 w-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                  </svg>
-                  Years in Business: {{ supplier.yearsInBusiness }}
-                </p>
-              </div>
-            </div>
-            <div class="bg-gray-50 p-4 rounded-lg">
-              <h2 class="text-sm font-semibold text-gray-600 mb-2">Contact Information</h2>
-              <div class="space-y-2">
-                <p class="flex items-center">
-                  <svg class="h-5 w-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                  </svg>
-                  <a :href="`mailto:${supplier.email}`" class="text-blue-600 hover:underline">
-                    {{ supplier.email }}
-                  </a>
-                </p>
-                <p class="flex items-center">
-                  <svg class="h-5 w-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
-                  </svg>
-                  Phone: +1 (555) 123-4567
-                </p>
-              </div>
-            </div>
-            <div class="bg-gray-50 p-4 rounded-lg md:col-span-2">
-              <h2 class="text-sm font-semibold text-gray-600 mb-2">Business Details</h2>
-              <div class="space-y-2">
-                <p class="flex items-center">
-                  <svg class="h-5 w-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                  </svg>
-                  Business Type: {{ supplier.businessType }}
-                </p>
-                <p class="flex items-center">
-                  <svg class="h-5 w-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                  </svg>
-                  Services Offered: {{ supplier.servicesOffered }}
-                </p>
-              </div>
+              {{ supplier.status }}
+            </span>
+            <div class="flex">
+              <template v-for="n in 5" :key="n">
+                <svg 
+                  :class="n <= supplier.performanceRating ? 'text-yellow-400' : 'text-gray-300'"
+                  class="h-4 w-4 sm:h-5 sm:w-5"
+                  fill="currentColor" 
+                  viewBox="0 0 20 20"
+                >
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                </svg>
+              </template>
             </div>
           </div>
         </div>
-  
-        <!-- Supplier Performance Tabs -->
-        <div class="border-t">
-          <nav class="flex space-x-4 p-4 bg-gray-100">
+
+        <!-- Supplier Details -->
+        <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+          <div class="bg-gray-50 p-3 sm:p-4 rounded-lg">
+            <h2 class="text-xs sm:text-sm font-semibold text-gray-600 mb-2">Company Information</h2>
+            <div class="space-y-1 sm:space-y-2">
+              <p class="flex items-center text-sm">
+                <svg class="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+                <span class="break-all">Registration Number: {{ supplier.registrationNumber }}</span>
+              </p>
+              <p class="flex items-center text-sm">
+                <svg class="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+                <span>Years in Business: {{ supplier.yearsInBusiness }}</span>
+              </p>
+            </div>
+          </div>
+          <div class="bg-gray-50 p-3 sm:p-4 rounded-lg">
+            <h2 class="text-xs sm:text-sm font-semibold text-gray-600 mb-2">Contact Information</h2>
+            <div class="space-y-1 sm:space-y-2">
+              <p class="flex items-center text-sm">
+                <svg class="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+                <a :href="`mailto:${supplier.email}`" class="text-blue-600 hover:underline break-all">
+                  {{ supplier.email }}
+                </a>
+              </p>
+              <p class="flex items-center text-sm">
+                <svg class="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                </svg>
+                <span>Phone: +1 (555) 123-4567</span>
+              </p>
+            </div>
+          </div>
+          <div class="bg-gray-50 p-3 sm:p-4 rounded-lg sm:col-span-2">
+            <h2 class="text-xs sm:text-sm font-semibold text-gray-600 mb-2">Business Details</h2>
+            <div class="space-y-1 sm:space-y-2">
+              <p class="flex items-center text-sm">
+                <svg class="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+                <span>Business Type: {{ supplier.businessType }}</span>
+              </p>
+              <p class="flex items-start text-sm">
+                <svg class="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2 mt-0.5 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span class="break-words">Services Offered: {{ supplier.servicesOffered }}</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Supplier Performance Tabs -->
+      <div class="border-t">
+        <nav class="flex overflow-x-auto p-2 sm:p-4 bg-gray-100 hide-scrollbar">
+          <div class="flex space-x-2 sm:space-x-4 min-w-full">
             <button 
               v-for="tab in tabs" 
               :key="tab"
@@ -145,80 +148,82 @@
                 'border-blue-500 text-blue-600': currentTab === tab,
                 'border-transparent text-gray-500 hover:text-gray-700': currentTab !== tab
               }"
-              class="px-3 py-2 border-b-2 font-medium text-sm focus:outline-none"
+              class="px-2 sm:px-3 py-1 sm:py-2 border-b-2 font-medium text-xs sm:text-sm focus:outline-none whitespace-nowrap"
             >
               {{ tab }}
             </button>
-          </nav>
-  
-          <!-- Tab Content -->
-          <div class="p-6">
-            <!-- Performance Tab -->
-            <div v-if="currentTab === 'Performance'" class="space-y-4">
-              <div class="grid md:grid-cols-2 gap-4">
-                <div class="bg-gray-50 p-4 rounded-lg">
-                  <h3 class="text-sm font-semibold text-gray-600 mb-2">Performance Metrics</h3>
-                  <div class="space-y-2">
-                    <div class="flex justify-between items-center">
-                      <span>On-Time Delivery</span>
-                      <div class="w-1/2 bg-gray-200 rounded-full h-2.5">
-                        <div class="bg-green-500 h-2.5 rounded-full" style="width: 85%"></div>
-                      </div>
-                    </div>
-                    <div class="flex justify-between items-center">
-                      <span>Quality of Service</span>
-                      <div class="w-1/2 bg-gray-200 rounded-full h-2.5">
-                        <div class="bg-blue-500 h-2.5 rounded-full" style="width: 75%"></div>
-                      </div>
-                    </div>
-                    <div class="flex justify-between items-center">
-                      <span>Cost Competitiveness</span>
-                      <div class="w-1/2 bg-gray-200 rounded-full h-2.5">
-                        <div class="bg-yellow-500 h-2.5 rounded-full" style="width: 65%"></div>
-                      </div>
+          </div>
+        </nav>
+
+        <!-- Tab Content -->
+        <div class="p-3 sm:p-6">
+          <!-- Performance Tab -->
+          <div v-if="currentTab === 'Performance'" class="space-y-3 sm:space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+              <div class="bg-gray-50 p-3 sm:p-4 rounded-lg">
+                <h3 class="text-xs sm:text-sm font-semibold text-gray-600 mb-2">Performance Metrics</h3>
+                <div class="space-y-2">
+                  <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center">
+                    <span class="text-sm mb-1 sm:mb-0">On-Time Delivery</span>
+                    <div class="w-full sm:w-1/2 bg-gray-200 rounded-full h-2">
+                      <div class="bg-green-500 h-2 rounded-full" style="width: 85%"></div>
                     </div>
                   </div>
-                </div>
-                <div class="bg-gray-50 p-4 rounded-lg">
-                  <h3 class="text-sm font-semibold text-gray-600 mb-2">Key Performance Indicators</h3>
-                  <div class="grid grid-cols-3 gap-4 text-center">
-                    <div>
-                      <div class="text-2xl font-bold text-green-600">95%</div>
-                      <div class="text-xs text-gray-500">Fulfillment Rate</div>
+                  <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center">
+                    <span class="text-sm mb-1 sm:mb-0">Quality of Service</span>
+                    <div class="w-full sm:w-1/2 bg-gray-200 rounded-full h-2">
+                      <div class="bg-blue-500 h-2 rounded-full" style="width: 75%"></div>
                     </div>
-                    <div>
-                      <div class="text-2xl font-bold text-blue-600">7</div>
-                      <div class="text-xs text-gray-500">Days Avg. Delivery</div>
-                    </div>
-                    <div>
-                      <div class="text-2xl font-bold text-yellow-600">$45K</div>
-                      <div class="text-xs text-gray-500">Total Spend</div>
+                  </div>
+                  <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center">
+                    <span class="text-sm mb-1 sm:mb-0">Cost Competitiveness</span>
+                    <div class="w-full sm:w-1/2 bg-gray-200 rounded-full h-2">
+                      <div class="bg-yellow-500 h-2 rounded-full" style="width: 65%"></div>
                     </div>
                   </div>
                 </div>
               </div>
+              <div class="bg-gray-50 p-3 sm:p-4 rounded-lg">
+                <h3 class="text-xs sm:text-sm font-semibold text-gray-600 mb-2">Key Performance Indicators</h3>
+                <div class="grid grid-cols-3 gap-2 sm:gap-4 text-center">
+                  <div>
+                    <div class="text-xl sm:text-2xl font-bold text-green-600">95%</div>
+                    <div class="text-xs text-gray-500">Fulfillment Rate</div>
+                  </div>
+                  <div>
+                    <div class="text-xl sm:text-2xl font-bold text-blue-600">7</div>
+                    <div class="text-xs text-gray-500">Days Avg. Delivery</div>
+                  </div>
+                  <div>
+                    <div class="text-xl sm:text-2xl font-bold text-yellow-600">$45K</div>
+                    <div class="text-xs text-gray-500">Total Spend</div>
+                  </div>
+                </div>
+              </div>
             </div>
-  
-            <!-- Contracts Tab -->
-            <div v-if="currentTab === 'Contracts'" class="space-y-4">
-              <div class="overflow-x-auto">
-                <table class="w-full">
+          </div>
+
+          <!-- Contracts Tab -->
+          <div v-if="currentTab === 'Contracts'" class="space-y-3 sm:space-y-4">
+            <div class="overflow-x-auto -mx-3 sm:mx-0">
+              <div class="inline-block min-w-full align-middle p-3 sm:p-0">
+                <table class="min-w-full divide-y divide-gray-200">
                   <thead>
                     <tr class="bg-gray-100">
-                      <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Contract ID</th>
-                      <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Start Date</th>
-                      <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">End Date</th>
-                      <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Value</th>
-                      <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                      <th class="px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                      <th class="px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Start Date</th>
+                      <th class="px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">End Date</th>
+                      <th class="px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Value</th>
+                      <th class="px-2 sm:px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr class="border-b hover:bg-gray-50">
-                      <td class="px-4 py-3">CNT-2024-001</td>
-                      <td class="px-4 py-3">2024-01-15</td>
-                      <td class="px-4 py-3">2025-01-14</td>
-                      <td class="px-4 py-3">$120,000</td>
-                      <td class="px-4 py-3">
+                      <td class="px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm">CNT-2024-001</td>
+                      <td class="px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm">2024-01-15</td>
+                      <td class="px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm">2025-01-14</td>
+                      <td class="px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm">$120,000</td>
+                      <td class="px-2 sm:px-4 py-2 sm:py-3">
                         <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
                           Active
                         </span>
@@ -229,41 +234,43 @@
                 </table>
               </div>
             </div>
-  
-            <!-- Documents Tab -->
-            <div v-if="currentTab === 'Documents'" class="space-y-4">
-              <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div class="bg-gray-50 p-4 rounded-lg flex items-center justify-between">
-                  <div class="flex items-center space-x-3">
-                    <svg class="h-8 w-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0013.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                    </svg>
-                    <div>
-                      <div class="font-medium text-gray-800">Vendor Registration</div>
-                      <div class="text-xs text-gray-500">PDF, 2.3 MB</div>
-                    </div>
+          </div>
+
+          <!-- Documents Tab -->
+          <div v-if="currentTab === 'Documents'" class="space-y-3 sm:space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+              <div class="bg-gray-50 p-3 sm:p-4 rounded-lg flex items-center justify-between">
+                <div class="flex items-center space-x-2 sm:space-x-3">
+                  <svg class="h-6 w-6 sm:h-8 sm:w-8 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0013.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                  </svg>
+                  <div>
+                    <div class="font-medium text-gray-800 text-sm sm:text-base truncate max-w-xs">Vendor Registration</div>
+                    <div class="text-xs text-gray-500">PDF, 2.3 MB</div>
                   </div>
-                  <button class="text-blue-600 hover:text-blue-800">
-                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-                    </svg>
-                  </button>
                 </div>
-                <!-- Add more document items -->
+                <button class="text-blue-600 hover:text-blue-800 p-1">
+                  <svg class="h-4 w-4 sm:h-5 sm:w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                  </svg>
+                </button>
               </div>
+              <!-- Add more document items -->
             </div>
           </div>
         </div>
       </div>
-          <!-- Supplier Edit Slider -->
+    </div>
+    
+    <!-- Supplier Edit Slider -->
     <SupplierAddSlider 
       :is-open="isEditSliderOpen" 
       :supplier="supplier"
       @close="closeEditSlider"
       @update-supplier="updateSupplierDetails"
     />
-    </div>
-  </template>
+  </div>
+</template>
   
   <script setup>
   import { ref } from 'vue'
@@ -310,3 +317,13 @@ const updateSupplierDetails = (updatedSupplier) => {
   closeEditSlider()
 }
   </script>
+
+<style scoped>
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+</style>

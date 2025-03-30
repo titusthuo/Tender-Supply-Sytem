@@ -1,4 +1,3 @@
-<!-- src/components/Bidding/BidNotification.vue -->
 <template>
   <Transition name="notification-fade">
     <div v-if="visible" class="fixed inset-0 flex items-center justify-center z-50 p-4">
@@ -6,38 +5,38 @@
       <div class="absolute inset-0 bg-black bg-opacity-30" @click="closeIfClickable"></div>
       
       <!-- Success Notification -->
-      <div v-if="type === 'success'" class="bg-white rounded-lg shadow-xl w-full max-w-md z-10 overflow-hidden">
-        <div class="bg-green-500 py-4 px-6 text-white">
+      <div v-if="type === 'success'" class="bg-white rounded-lg shadow-xl w-full max-w-md z-10 overflow-hidden mx-4">
+        <div class="bg-green-500 py-3 px-4 sm:py-4 sm:px-6 text-white">
           <div class="flex items-center justify-between">
             <div class="flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6 mr-2 sm:mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
               </svg>
-              <h2 class="text-xl font-bold">{{ title }}</h2>
+              <h2 class="text-lg sm:text-xl font-bold truncate">{{ title }}</h2>
             </div>
-            <button @click="close" class="text-white hover:text-gray-200">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <button @click="close" class="text-white hover:text-gray-200 ml-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
               </svg>
             </button>
           </div>
         </div>
 
-        <div class="p-6">
+        <div class="p-4 sm:p-6">
           <!-- Message Content -->
-          <p class="text-gray-700 mb-6">{{ message }}</p>
+          <p class="text-sm sm:text-base text-gray-700 mb-4 sm:mb-6">{{ message }}</p>
           
           <!-- Bid Details -->
-          <div v-if="showDetails" class="bg-gray-50 rounded-lg p-4 mb-6">
-            <div class="grid grid-cols-2 gap-2 text-sm">
+          <div v-if="showDetails" class="bg-gray-50 rounded-lg p-3 sm:p-4 mb-4 sm:mb-6">
+            <div class="grid grid-cols-2 gap-1 sm:gap-2 text-xs sm:text-sm">
               <div class="text-gray-500">Bid ID:</div>
-              <div class="font-medium text-gray-700">{{ bidDetails.bidId }}</div>
+              <div class="font-medium text-gray-700 break-all">{{ bidDetails.bidId }}</div>
               
               <div class="text-gray-500">Submitted on:</div>
               <div class="font-medium text-gray-700">{{ bidDetails.submissionDate }}</div>
               
               <div class="text-gray-500">Project:</div>
-              <div class="font-medium text-gray-700">{{ bidDetails.projectTitle }}</div>
+              <div class="font-medium text-gray-700 break-words">{{ bidDetails.projectTitle }}</div>
               
               <div class="text-gray-500">Amount:</div>
               <div class="font-medium text-gray-700">${{ formatAmount(bidDetails.bidAmount) }}</div>
@@ -45,15 +44,15 @@
           </div>
           
           <!-- Action Buttons -->
-          <div class="flex space-x-3">
+          <div class="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-3">
             <button 
-              class="flex-1 py-2 px-4 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+              class="py-2 px-3 sm:px-4 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 sm:flex-1"
               @click="$emit('track-bid')"
             >
               Track Bid Status
             </button>
             <button 
-              class="flex-1 py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              class="py-2 px-3 sm:px-4 bg-blue-600 text-sm text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:flex-1"
               @click="$emit('new-bid')"
             >
               Submit Another Bid
@@ -63,27 +62,27 @@
       </div>
       
       <!-- Error Notification -->
-      <div v-else-if="type === 'error'" class="bg-white rounded-lg shadow-xl w-full max-w-md z-10 overflow-hidden">
-        <div class="bg-red-500 py-4 px-6 text-white">
+      <div v-else-if="type === 'error'" class="bg-white rounded-lg shadow-xl w-full max-w-md z-10 overflow-hidden mx-4">
+        <div class="bg-red-500 py-3 px-4 sm:py-4 sm:px-6 text-white">
           <div class="flex items-center justify-between">
             <div class="flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6 mr-2 sm:mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
-              <h2 class="text-xl font-bold">{{ title }}</h2>
+              <h2 class="text-lg sm:text-xl font-bold truncate">{{ title }}</h2>
             </div>
-            <button @click="close" class="text-white hover:text-gray-200">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <button @click="close" class="text-white hover:text-gray-200 ml-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
               </svg>
             </button>
           </div>
         </div>
 
-        <div class="p-6">
-          <p class="text-gray-700 mb-6">{{ message }}</p>
+        <div class="p-4 sm:p-6">
+          <p class="text-sm sm:text-base text-gray-700 mb-4 sm:mb-6">{{ message }}</p>
           <button 
-            class="w-full py-2 px-4 bg-gray-600 text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+            class="w-full py-2 px-3 sm:px-4 bg-gray-600 text-sm text-white rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
             @click="close"
           >
             Try Again
@@ -97,22 +96,21 @@
   <Transition name="slide-down">
     <div v-if="showFloatingStatus" 
          :class="[
-           'fixed top-0 right-0 m-4 py-2 px-4 max-w-xs rounded-md shadow-lg z-40 transition-all duration-300',
+           'fixed top-0 right-0 m-2 sm:m-4 py-2 px-3 sm:px-4 max-w-xs rounded-md shadow-lg z-40 transition-all duration-300',
            type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
          ]">
       <div class="flex items-center">
-        <svg v-if="type === 'success'" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg v-if="type === 'success'" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
         </svg>
-        <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
         </svg>
-        <p class="text-sm font-medium">{{ title }}</p>
+        <p class="text-xs sm:text-sm font-medium">{{ title }}</p>
       </div>
     </div>
   </Transition>
 </template>
-
 <script setup>
 import { ref, onMounted, watch, onUnmounted, computed } from 'vue';
 

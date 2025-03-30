@@ -4,7 +4,6 @@ import HomeView from '../components/HomeView.vue'
 import Role from '../components/Role.vue'
 import BuyerDashboard from '../components/Buyer/BuyerDashboard.vue'
 import Tenders from '../components/Buyer/Tenders.vue'
-import SupplierManagement from '../components/Buyer/SupplierManagement.vue'
 import ContractManagement from '../components/Buyer/ContractManagement.vue'
 import OrderManagement from '../components/Buyer/OrderManagement.vue'
 import ProfileSettings from '../components/Profile/ProfileSettings.vue'
@@ -141,31 +140,6 @@ const routes = [
         },
         {
           text: 'Contract Details',
-          active: true
-        }
-      ]
-    }
-  },
-  {
-    path: '/supplierManagement',
-    name: 'supplierManagement',
-    component: SupplierManagement,
-    meta: {
-      layout: DashboardLayout,
-      topLeftSlot: Breadcrumb,
-      breadcrumbs: [
-        {
-          text: 'Home',
-          active: false,
-          to: { name: 'home' }
-        },
-        {
-          text: 'Buyer',
-          active: false,
-          to: { name: 'buyers' }
-        },
-        {
-          text: 'Supplier Management',
           active: true
         }
       ]
